@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>13 Schema Migrations — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Database Architecture</a></li>
+  <li><a href="local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="migrations.html" class="active">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Database</a> <span>»</span> <span>Migrations</span>
+      </div>
+      
+    <h1>Schema Migration Engine (13 Idempotent Steps)</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Zero-Downtime Local Migrations</div>
+      MotorMeasure Pro maintains backward compatibility across software releases by executing an <strong>automated, idempotent in-code migration sequence</strong> inside <code>src/gmfm_app/data/database.py:init_db()</code> whenever a database connection opens.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#how">1. How In-Code Migrations Work</a></li>
+        <li><a href="#sequence">2. The 13 Sequential Migration Steps</a></li>
+        <li><a href="#bootstrap">3. One-Time Administrator Bootstrapping</a></li>
+      </ul>
+    </div>
+
+    <h2 id="how">1. How In-Code Migrations Work</h2>
+    <p>Rather than requiring command-line migration tools (like Alembic) that are difficult to package and invoke inside mobile application sandbox runtimes, migrations are structured as safe <code>ALTER TABLE</code> and <code>CREATE TABLE IF NOT EXISTS</code> statements. Each statement is wrapped in defensive <code>try/except sqlite3.OperationalError</code> blocks, guaranteeing that re-running <code>init_db()</code> is completely idempotent.</p>
+
+    <h2 id="sequence">2. The 13 Sequential Migration Steps</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Step #</th>
+          <th>Migration Operation</th>
+          <th>Underlying SQL Statement</th>
+          <th>Evolutionary Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Rename <code>patients</code> &rarr; <code>students</code></td>
+          <td><code>ALTER TABLE patients RENAME TO students</code></td>
+          <td>Replaces clinical institutional phrasing with inclusive educational terminology.</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Add <code>sessions.notes</code></td>
+          <td><code>ALTER TABLE sessions ADD COLUMN notes TEXT</code></td>
+          <td>Introduces free-form qualitative assessment observations.</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Add <code>app_users.role</code></td>
+          <td><code>ALTER TABLE app_users ADD COLUMN role TEXT DEFAULT 'clinician'</code></td>
+          <td>Establishes role-based access foundation.</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Add <code>app_users.is_active</code></td>
+          <td><code>ALTER TABLE app_users ADD COLUMN is_active INTEGER DEFAULT 1</code></td>
+          <td>Enables soft deactivation of retired clinician accounts.</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Rename <code>patient_id</code> &rarr; <code>student_id</code></td>
+          <td><code>ALTER TABLE sessions RENAME COLUMN patient_id TO student_id</code></td>
+          <td>Synchronizes foreign key column naming with the renamed table.</td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td>Add <code>app_users.email</code></td>
+          <td><code>ALTER TABLE app_users ADD COLUMN email TEXT DEFAULT ''</code></td>
+          <td>Supports Supabase GoTrue cloud identity integration.</td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td>Add <code>app_users.cloud_uid</code></td>
+          <td><code>ALTER TABLE app_users ADD COLUMN cloud_uid TEXT DEFAULT ''</code></td>
+          <td>Binds local SQLite user rows to remote PostgreSQL UUIDs.</td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td>Add <code>students.user_id</code></td>
+          <td><code>ALTER TABLE students ADD COLUMN user_id INTEGER DEFAULT 1</code></td>
+          <td>Introduces per-user data isolation for student ownership.</td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td>Add <code>sessions.user_id</code></td>
+          <td><code>ALTER TABLE sessions ADD COLUMN user_id INTEGER DEFAULT 1</code></td>
+          <td>Records authoring clinician identity on every assessment session.</td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td>Rename role <code>clinician</code> &rarr; <code>teacher</code></td>
+          <td><code>UPDATE app_users SET role = 'teacher' WHERE role = 'clinician'</code></td>
+          <td>Standardizes nomenclature across UI and access services.</td>
+        </tr>
+        <tr>
+          <td><strong>11</strong></td>
+          <td>Create <code>student_access</code> table</td>
+          <td><code>CREATE TABLE IF NOT EXISTS student_access (...)</code></td>
+          <td>Establishes unified relationship graph for co-teachers, parents, and sponsors.</td>
+        </tr>
+        <tr>
+          <td><strong>12</strong></td>
+          <td>Backfill owner access links</td>
+          <td><code>INSERT OR IGNORE INTO student_access ... SELECT id, user_id, 'owner' FROM students</code></td>
+          <td>Idempotently populates relationship table for all pre-existing student records.</td>
+        </tr>
+        <tr>
+          <td><strong>13</strong></td>
+          <td>Bootstrap first administrator</td>
+          <td><code>UPDATE app_users SET role = 'admin' WHERE id = (SELECT id FROM app_users ORDER BY created_at ASC LIMIT 1)</code></td>
+          <td>Promotes the earliest registered account to administrator if no admin exists.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="bootstrap">3. One-Time Administrator Bootstrapping</h2>
+    <p>On a fresh system deployment, no accounts exist. When the initial user registers, <code>AuthService</code> detects that <code>UserRepository.count_users() == 0</code> and automatically assigns the <code>admin</code> role. For legacy single-user databases upgrading to v0.0.3, Migration Step 13 automatically promotes the earliest created local account, ensuring administrative console access is never locked out.</p>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="cloud-schema.html" class="bottom-nav-title">Supabase PostgreSQL & RLS</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../services/index.html" class="bottom-nav-title">Services Overview</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

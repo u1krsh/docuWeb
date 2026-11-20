@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services Overview — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Services Overview</a></li>
+  <li><a href="auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="access.html">Access Scoping & Roles</a></li>
+  <li><a href="hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Services</span>
+      </div>
+      
+    <h1>Services Subsystem Overview</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Business Logic Layer</div>
+      The Services Subsystem (<code>src/gmfm_app/services/</code>) comprises 12 modular services implementing authentication, cloud synchronization, report generation, role authorization, and device hardware abstractions.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#directory">1. Services Directory Map</a></li>
+        <li><a href="#subpages">2. Detailed Subsystem Manuals</a></li>
+      </ul>
+    </div>
+
+    <h2 id="directory">1. Services Directory Map</h2>
+    <table>
+      <thead>
+        <tr><th>Service</th><th>Module File</th><th>Lines</th><th>Core Functionality</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AuthService</strong></td>
+          <td><code>auth_service.py</code></td>
+          <td>437</td>
+          <td>Local PBKDF2 authentication, Supabase cloud registration/login, OTP password recovery.</td>
+        </tr>
+        <tr>
+          <td><strong>SyncService</strong></td>
+          <td><code>sync_service.py</code></td>
+          <td>683</td>
+          <td>Push/pull offline-first synchronization engine communicating with Supabase PostgREST.</td>
+        </tr>
+        <tr>
+          <td><strong>SyncWorker</strong></td>
+          <td><code>sync_worker.py</code></td>
+          <td>146</td>
+          <td>Background polling daemon (60s loop) checking network reachability and flushing queues.</td>
+        </tr>
+        <tr>
+          <td><strong>ReportService</strong></td>
+          <td><code>report_service.py</code></td>
+          <td>650</td>
+          <td>Multi-tier PDF clinical report builder (ReportLab &rarr; fpdf2 &rarr; raw PDF byte engine).</td>
+        </tr>
+        <tr>
+          <td><strong>AccessService</strong></td>
+          <td><code>access_service.py</code></td>
+          <td>83</td>
+          <td>Resolves <code>AccessScope</code> boundaries for Admin, Teacher, Parent, and Sponsor roles.</td>
+        </tr>
+        <tr>
+          <td><strong>ChartService</strong></td>
+          <td><code>chart_service.py</code></td>
+          <td>94</td>
+          <td>Matplotlib longitudinal trend plotting rendered to PNG byte buffers for UI and PDFs.</td>
+        </tr>
+        <tr>
+          <td><strong>SecurityProvider</strong></td>
+          <td><code>security.py</code></td>
+          <td>91</td>
+          <td>Fernet AES-128-CBC encryption key resolution and symmetric encryption helpers.</td>
+        </tr>
+        <tr>
+          <td><strong>DocxImportService</strong></td>
+          <td><code>docx_import_service.py</code></td>
+          <td>324</td>
+          <td>Parses legacy GMFM Word assessment documents (.docx) into structured student sessions.</td>
+        </tr>
+        <tr>
+          <td><strong>Haptics</strong></td>
+          <td><code>haptics.py</code></td>
+          <td>82</td>
+          <td>Tactile vibration patterns optimized for mobile devices (Nothing Phone 2a linear motor).</td>
+        </tr>
+        <tr>
+          <td><strong>InstructionsService</strong></td>
+          <td><code>instructions_service.py</code></td>
+          <td>100</td>
+          <td>Loads exercise descriptions and starting positions from embedded JSON data.</td>
+        </tr>
+        <tr>
+          <td><strong>UIScale</strong></td>
+          <td><code>ui_scale.py</code></td>
+          <td>125</td>
+          <td>Reads Android system <code>text_scale_factor</code> and dynamically scales UI container metrics.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="subpages">2. Detailed Subsystem Manuals</h2>
+    <div class="docu-grid">
+      <a class="docu-card" href="auth.html">
+        <h3>Authentication Service &amp; PBKDF2</h3>
+        <p>Password hashing specification, session persistence, automatic cloud provisioning, and role reconciliation.</p>
+      </a>
+      <a class="docu-card" href="sync.html">
+        <h3>Offline-First Sync Engine</h3>
+        <p>Git-like commit/push/pull synchronization architecture, connectivity probing, and conflict resolution.</p>
+      </a>
+      <a class="docu-card" href="reports.html">
+        <h3>3-Tier PDF Pipeline</h3>
+        <p>Detailed analysis of ReportLab, fpdf2, and the zero-dependency pure-Python raw PDF generation fallback.</p>
+      </a>
+      <a class="docu-card" href="access.html">
+        <h3>Access Scoping &amp; Roles</h3>
+        <p>Role-based access matrix and fail-closed security boundary resolution for multidisciplinary teams.</p>
+      </a>
+      <a class="docu-card" href="hardware.html">
+        <h3>Hardware &amp; Import Services</h3>
+        <p>Haptic feedback design, Android accessibility scaling, and DOCX assessment document importer.</p>
+      </a>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../database/migrations.html" class="bottom-nav-title">13 Schema Migrations</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="auth.html" class="bottom-nav-title">Authentication & PBKDF2</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

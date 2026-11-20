@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Development Journey & Roadmap — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Development</span>
+      </div>
+      
+    <h1>Development Journey, Commits & Product Roadmap</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Development Period</div>
+      MotorMeasure Pro was designed, built, and hardened across a 4-month development cycle (November 2025 – March 2026) by lead developer <strong>Uttkarsh Singh</strong>.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#phases">1. Five Phases of Development</a></li>
+        <li><a href="#commits">2. Complete Git Commit Chronology</a></li>
+        <li><a href="#roadmap">3. Future Development Roadmap</a></li>
+      </ul>
+    </div>
+
+    <h2 id="phases">1. Five Phases of Development</h2>
+    <dl>
+      <dt>Phase 1: Foundation (Nov 17 – 28, 2025)</dt>
+      <dd>Initial database schema, SQLite persistence, and core GMFM-88 mathematical engine. Early prototypes experimented with KivyMD.</dd>
+
+      <dt>Phase 2: Framework Migration &amp; UI Polish (Dec 7 – 10, 2025)</dt>
+      <dd>Pivoted to Flet 0.28.3 for Flutter-based mobile rendering. Rebuilt view components, added mobile haptics for Nothing Phone 2a, and stabilized navigation.</dd>
+
+      <dt>Phase 3: Feature Expansion (Jan 5 – 24, 2026)</dt>
+      <dd>Added Microsoft Word (.docx) assessment importer and authored the 80 KB comprehensive exercise instructions database.</dd>
+
+      <dt>Phase 4: Stabilization &amp; Android Hardening (Feb 28 – Mar 2, 2026)</dt>
+      <dd>Addressed Android packaging errors, Serious Python asset resolution issues, and implemented base64 embedded splash logos.</dd>
+
+      <dt>Phase 5: Authentication &amp; Cloud Sync (Mar 2 – 16, 2026)</dt>
+      <dd>Engineered PBKDF2 local authentication, Supabase cloud sync engine, background worker daemon, and released version v0.0.3.</dd>
+    </dl>
+
+    <h2 id="commits">2. Complete Git Commit Chronology</h2>
+    <table>
+      <thead>
+        <tr><th>Commit Hash</th><th>Date</th><th>Commit Message</th><th>Phase</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>375251d</code></td><td>2025-11-17</td><td>Initial commit</td><td>Foundation</td></tr>
+        <tr><td><code>edeff63</code></td><td>2025-11-22</td><td>some_updates</td><td>Foundation</td></tr>
+        <tr><td><code>2f050de</code></td><td>2025-11-22</td><td>ui_changes</td><td>Foundation</td></tr>
+        <tr><td><code>6da6253</code></td><td>2025-11-28</td><td>some_changes</td><td>Foundation</td></tr>
+        <tr><td><code>b3be147</code></td><td>2025-12-07</td><td>new flet (Kivy &rarr; Flet migration)</td><td>Framework</td></tr>
+        <tr><td><code>48f6984</code></td><td>2025-12-07</td><td>changes</td><td>Framework</td></tr>
+        <tr><td><code>061acaa</code></td><td>2025-12-08</td><td>ui_improvements</td><td>Framework</td></tr>
+        <tr><td><code>d0535d7</code></td><td>2025-12-08</td><td>ando (Initial Android builds)</td><td>Framework</td></tr>
+        <tr><td><code>0d8e6c3</code></td><td>2025-12-09</td><td>needs to be fixed</td><td>Bug Fix</td></tr>
+        <tr><td><code>8763df8</code></td><td>2025-12-10</td><td>haptics (Nothing Phone 2a integration)</td><td>Mobile</td></tr>
+        <tr><td><code>8a530c2</code></td><td>2026-01-05</td><td>changes_to_add_DOCX (Docx import)</td><td>Features</td></tr>
+        <tr><td><code>3b42538</code></td><td>2026-01-24</td><td>Update instructions_data.json</td><td>Features</td></tr>
+        <tr><td><code>0e16d4b</code></td><td>2026-03-02</td><td>android_fixed</td><td>Hardening</td></tr>
+        <tr><td><code>71e6877</code></td><td>2026-03-02</td><td>optimised</td><td>Hardening</td></tr>
+        <tr><td><code>cfeed0e</code></td><td>2026-03-02</td><td>logo_added (Base64 splash assets)</td><td>Branding</td></tr>
+        <tr><td><code>483cd11</code></td><td>2026-03-16</td><td>0.0.3, login (Two-tier auth &amp; v0.0.3)</td><td>Release</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="roadmap">3. Future Development Roadmap</h2>
+    <ul>
+      <li>[ ] <strong>GMFM-66 Lookup Engine</strong>: Implement item difficulty Rasch lookup tables for full interval-scaled scoring.</li>
+      <li>[ ] <strong>GMFCS Level Classifier</strong>: Interactive decision-tree wizard for Gross Motor Function Classification System levels I–V.</li>
+      <li>[ ] <strong>Automated CI/CD</strong>: GitHub Actions workflow for automatic multi-platform APK and executable artifact packaging.</li>
+    </ul>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../testing/index.html" class="bottom-nav-title">Test Suite & Clinical Oracle</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../api/index.html" class="bottom-nav-title">Complete API Reference</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

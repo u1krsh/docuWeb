@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Architecture Overview — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Architecture Overview</a></li>
+  <li><a href="layers.html">Layered Architecture</a></li>
+  <li><a href="data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Architecture</span>
+      </div>
+      
+    <h1>System Architecture Overview</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Architecture Summary</div>
+      MotorMeasure Pro is engineered using a decoupled, 4-tier layered architecture: <strong>Presentation (Views)</strong>, <strong>Business Logic (Services)</strong>, <strong>Data Access & Persistence (Data)</strong>, and <strong>Clinical Engine (Scoring)</strong>. The system isolates platform dependencies and networking, ensuring offline reliability.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Section Contents</div>
+      <ul>
+        <li><a href="#principles">1. Core Architectural Tenets</a></li>
+        <li><a href="#diagram">2. High-Level System Block Diagram</a></li>
+        <li><a href="#modules">3. Package & Directory Organization</a></li>
+        <li><a href="#runtime">4. Runtime Adaptation & Entry Points</a></li>
+        <li><a href="#subsections">5. Subsystem Reference Links</a></li>
+      </ul>
+    </div>
+
+    <h2 id="principles">1. Core Architectural Tenets</h2>
+    <dl>
+      <dt>Offline-First Autonomy</dt>
+      <dd>The local SQLite database is the immediate source of truth for all clinical transactions. The app performs zero mandatory network calls on startup, during student profile editing, or while scoring an 88-item assessment.</dd>
+      
+      <dt>Stateless Clinical Scoring</dt>
+      <dd>The scoring engine (<code>gmfm_app.scoring.engine</code>) is a pure, side-effect-free mathematical function. It accepts raw inputs, applies validation and clamping, and computes domain and total percentages without coupling to the UI or database.</dd>
+
+      <dt>Defensive Execution & Graceful Degradation</dt>
+      <dd>Every optional third-party module (Pydantic, cryptography, ReportLab, fpdf2, Supabase) is imported defensively. If platform constraints disable compiled binary libraries on mobile, the system falls back to pure Python implementations without halting.</dd>
+
+      <dt>Git-like Asynchronous Synchronization</dt>
+      <dd>Local mutations write an audit log into an internal <code>sync_queue</code> table. A decoupled background thread (<code>SyncWorker</code>) evaluates network availability and negotiates bidirectional synchronization with Supabase when online.</dd>
+    </dl>
+
+    <h2 id="diagram">2. High-Level System Block Diagram</h2>
+    <div class="code-container">
+      <div class="code-header"><span>Architectural Topology</span><span>ASCII System Diagram</span></div>
+      <pre><code>+------------------------------------------------------------------------------+
+|                         PRESENTATION LAYER (Flet Views)                      |
+|  [LoginView]   [DashboardView]   [StudentView]   [ScoringView]   [SessionView] |
+|  [SettingsView] [AdminConsoleView] [ParentDashboardView] [CompareView]        |
++------------------------------------------------------------------------------+
+                                       |
+                   Calls Service APIs  | Returns Controls & State
+                                       v
++------------------------------------------------------------------------------+
+|                          SERVICES LAYER (Business Logic)                     |
+|  * AuthService        : PBKDF2 Password Verification & Cloud Provisioning    |
+|  * AccessService      : Role Scoping (Admin, Teacher, Parent, Sponsor)       |
+|  * SyncService        : Offline Queue Push/Pull Engine                       |
+|  * SyncWorker         : 60-Second Background Thread Poller                   |
+|  * ReportService      : 3-Tier Multi-Platform PDF Generator                  |
+|  * ChartService       : Matplotlib Longitudinal Trajectory Renderer          |
+|  * SecurityProvider   : Fernet Symmetric Key Resolution & Encryption         |
+|  * Haptics / UIScale  : Mobile Vibration Patterns & Accessibility Scaling    |
++------------------------------------------------------------------------------+
+             |                                              |
+     Scoring | Calculation                          Persists| and Queries
+             v                                              v
++-----------------------------+        +---------------------------------------+
+|    SCORING ENGINE (Domain)  |        |        DATA LAYER (Persistence)       |
+|  * engine.py: Domain Math   |        |  * models.py: Dual Pydantic/Dataclass |
+|  * items_catalog.py         |        |  * repositories.py: Scoped CRUD &     |
+|  * items_data.json: 88 Items|        |    sync_queue mutation logger         |
+|  * constants.py: Lazy Maps  |        |  * database.py: DatabaseContext,      |
++-----------------------------+        |    SQLite Connection & 13 Migrations  |
+                                       +---------------------------------------+
+                                                            |
+                                                +-----------+-----------+
+                                                |                       |
+                                                v                       v
+                                        +---------------+       +---------------+
+                                        |  Local SQLite |       | Remote Cloud  |
+                                        |  gmfm_app.db  |       | Supabase / PG |
+                                        +---------------+       +---------------+</code></pre>
+    </div>
+
+    <h2 id="modules">3. Package & Directory Organization</h2>
+    <p>The code repository is structured under <code>src/gmfm_app</code> with explicit modular boundaries:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Directory / Module</th>
+          <th>Lines of Code</th>
+          <th>Architectural Responsibility</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>gmfm_app/main.py</code></td>
+          <td>712</td>
+          <td>App entry point, animated splash screen, views-based routing controller, theme manager.</td>
+        </tr>
+        <tr>
+          <td><code>gmfm_app/data/</code></td>
+          <td>~860</td>
+          <td>Database connection manager, automated migrations, domain models, and CRUD repositories.</td>
+        </tr>
+        <tr>
+          <td><code>gmfm_app/scoring/</code></td>
+          <td>~380</td>
+          <td>Canonical GMFM-88 items catalog (JSON), lazy constants, and domain mathematical engine.</td>
+        </tr>
+        <tr>
+          <td><code>gmfm_app/services/</code></td>
+          <td>~2,750</td>
+          <td>Authentication, cloud sync, background worker, PDF reporting, role access, and device APIs.</td>
+        </tr>
+        <tr>
+          <td><code>gmfm_app/views/</code></td>
+          <td>~3,600</td>
+          <td>Flet interactive screen components, form validators, dialogs, and navigation triggers.</td>
+        </tr>
+        <tr>
+          <td><code>tests/</code></td>
+          <td>~400</td>
+          <td>Unit test suite for scoring boundary verification and DOCX assessment document parsing.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="runtime">4. Runtime Adaptation & Entry Points</h2>
+    <p>MotorMeasure Pro provides multiple specialized entry points depending on target runtime:</p>
+    <ul>
+      <li><code>src/gmfm_app/main.py</code>: The master entry function <code>main(page: ft.Page)</code>. Detects desktop vs mobile runtimes. On desktop, initiates a multi-stage animated brand splash screen while building the database on a worker thread.</li>
+      <li><code>src/main.py</code>: Standard wrapper imported by Flet's packaging build tools during Android APK compilation.</li>
+      <li><code>src/entry_point.py</code>: Minimal bootloader configured for Serious Python Android embedder.</li>
+      <li><code>src/gmfm_app/main_desktop.py</code>: Dedicated standalone launcher for desktop debugging without packaging dependencies.</li>
+    </ul>
+
+    <h2 id="subsections">5. Subsystem Reference Links</h2>
+    <div class="docu-grid">
+      <a class="docu-card" href="layers.html">
+        <h3>Layered Architecture Details</h3>
+        <p>Comprehensive breakdown of each of the 4 layers, inter-layer protocols, and contracts.</p>
+      </a>
+      <a class="docu-card" href="data-flow.html">
+        <h3>Data Flow & Pipelines</h3>
+        <p>Step-by-step tracing of scoring input, SQLite storage, background sync push, and PDF generation.</p>
+      </a>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../index.html" class="bottom-nav-title">Documentation Home</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="layers.html" class="bottom-nav-title">Layered Architecture</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

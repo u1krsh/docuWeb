@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presentation Architecture — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">UI Architecture & Routing</a></li>
+  <li><a href="screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Views</span>
+      </div>
+      
+    <h1>Presentation Architecture & Flet Framework</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Native UI Rendering</div>
+      MotorMeasure Pro's graphical interface is built using <strong>Flet (version 0.28.3)</strong>. Flet translates high-level Python declarative component trees into native Flutter widgets, achieving 60 FPS touch responsiveness on mobile hardware.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#routing">1. Views-Based Declarative Routing</a></li>
+        <li><a href="#guards">2. Role-Based Route Guards</a></li>
+        <li><a href="#subpages">3. UI Documentation Manuals</a></li>
+      </ul>
+    </div>
+
+    <h2 id="routing">1. Views-Based Declarative Routing</h2>
+    <p>The application avoids monolithic canvas redraws. Instead, each screen implements a factory method returning an independent <code>ft.View</code>:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/main.py</span><span>Route Dispatcher</span></div>
+      <pre><code>def _create_view(self, route: str):
+    is_dark = self.page.theme_mode == ft.ThemeMode.DARK
+    current_user = self.auth_service.current_user(self.page)
+    scope = AccessService(self.db_context).scope_for(current_user)
+
+    if route == "/":
+        return DashboardView(self.page, self.db_context, is_dark, current_user=current_user, ...)
+    elif route.startswith("/scoring"):
+        pid = self._param_from_route(route, "student_id")
+        return ScoringView(self.page, self.db_context, int(pid), is_dark=is_dark, ...)
+    elif route.startswith("/admin"):
+        return AdminConsoleView(self.page, self.db_context, is_dark, ...)</code></pre>
+    </div>
+
+    <h2 id="guards">2. Role-Based Route Guards</h2>
+    <p>Before any view is instantiated, <code>_create_view()</code> evaluates the authenticated role:</p>
+    <ul>
+      <li><code>/admin*</code> routes immediately check <code>user_role == 'admin'</code>. Non-administrators receive an <code>Access Denied</code> view.</li>
+      <li><code>sponsor</code> roles are locked strictly to <code>/</code> (aggregate dashboard view).</li>
+      <li><code>parent</code> roles are permitted to view <code>/</code>, <code>/session</code>, and <code>/history</code>, but are blocked from scoring routes.</li>
+    </ul>
+
+    <h2 id="subpages">3. UI Documentation Manuals</h2>
+    <div class="docu-grid">
+      <a class="docu-card" href="screens.html">
+        <h3>Screen Inventory &amp; Workflows</h3>
+        <p>Complete walkthrough of all 10 views: Login, Dashboard, Student, Scoring, History, Detail, Compare, Settings, Admin, and Parent.</p>
+      </a>
+      <a class="docu-card" href="theming.html">
+        <h3>Visual Theming &amp; Color Tokens</h3>
+        <p>Design token palette, domain color coding (A-E), dark/light mode toggle, and contrast compliance.</p>
+      </a>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../services/hardware.html" class="bottom-nav-title">Hardware & Import Services</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="screens.html" class="bottom-nav-title">Screen Inventory & Workflows</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layered Architecture — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Architecture Overview</a></li>
+  <li><a href="layers.html" class="active">Layered Architecture</a></li>
+  <li><a href="data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Architecture</a> <span>»</span> <span>Layered Design</span>
+      </div>
+      
+    <h1>Layered Architecture Specification</h1>
+
+    <p>MotorMeasure Pro enforces a strict separation of concerns through four core layers. Inter-layer communication is unidirectional: outer presentation components depend on inner services and models, while domain calculation logic remains completely isolated.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#layer-presentation">1. Presentation Layer (Views)</a></li>
+        <li><a href="#layer-services">2. Services Layer (Business Logic)</a></li>
+        <li><a href="#layer-scoring">3. Scoring Engine (Domain Logic)</a></li>
+        <li><a href="#layer-data">4. Data Layer (Persistence & Security)</a></li>
+        <li><a href="#nav-lock">5. Navigation Stack & Anti-Race Controller</a></li>
+      </ul>
+    </div>
+
+    <h2 id="layer-presentation">1. Presentation Layer (Views)</h2>
+    <p>The presentation layer is located in <code>src/gmfm_app/views/</code>. Unlike traditional desktop GUI toolkits that mutate global canvases, MotorMeasure Pro uses Flet's <strong>views-based routing pattern</strong>.</p>
+    <p>Each screen is constructed as an independent class or factory that returns an instance of <code>flet.View</code>. The top-level <code>GMFMApp</code> controller manages the route stack:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>gmfm_app/main.py</span><span>Route Navigation Handler</span></div>
+      <pre><code>def _handle_route(self, is_back=False):
+    current_route = self.page.route or "/"
+    is_public = current_route.startswith("/login")
+    is_authenticated = self.auth_service.is_authenticated(self.page)
+
+    # 1. Gate unauthenticated requests
+    if not is_authenticated and not is_public:
+        self.page.go("/login")
+        return
+
+    # 2. Redirect authenticated users hitting login back to dashboard
+    if is_authenticated and is_public:
+        self.page.go("/")
+        return
+
+    # 3. Stack management
+    if is_back:
+        if len(self.page.views) > 1:
+            self.page.views.pop()
+    else:
+        new_view = self._create_scaled_view(current_route)
+        if new_view:
+            self.page.views.append(new_view)
+    self.page.update()</code></pre>
+    </div>
+
+    <h2 id="layer-services">2. Services Layer (Business Logic)</h2>
+    <p>Located in <code>src/gmfm_app/services/</code>, this layer houses all business operations:</p>
+    <ul>
+      <li><strong>AuthService</strong>: Manages local account creation, PBKDF2 password verification, token persistence in Flet <code>client_storage</code>, and auto-provisioning against Supabase GoTrue.</li>
+      <li><strong>AccessService</strong>: Determines exact data visibility scopes (<code>AccessScope</code>) based on the user's role (<code>admin</code>, <code>teacher</code>, <code>parent</code>, <code>sponsor</code>).</li>
+      <li><strong>SyncService & SyncWorker</strong>: Asynchronously manages cloud synchronization without freezing the UI thread.</li>
+      <li><strong>ReportService</strong>: Coordinates PDF scoresheet output across 3 diverse rendering engines.</li>
+      <li><strong>ChartService</strong>: Renders longitudinal motor trajectory trend charts using Matplotlib into in-memory PNG byte buffers.</li>
+      <li><strong>SecurityProvider</strong>: Resolves Fernet encryption keys and provides symmetric cipher helpers for patient PII fields.</li>
+    </ul>
+
+    <h2 id="layer-scoring">3. Scoring Engine (Domain Logic)</h2>
+    <p>Located in <code>src/gmfm_app/scoring/</code>, the clinical scoring engine has zero dependencies on databases or UI widgets. It takes raw scores as input and produces mathematical domain percentages:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>gmfm_app/scoring/engine.py</span><span>Pure Scoring Engine Logic</span></div>
+      <pre><code>def calculate_gmfm_scores(raw_scores: Dict[int, int], scale: str = "88") -> Dict[str, object]:
+    items_map = GMFM88_ITEMS
+    domains = {}
+    total_score = 0.0
+    total_items_scored = 0
+    total_items = 0
+
+    for domain, item_ids in items_map.items():
+        percent, n_items_scored = _score_domain(item_ids, raw_scores)
+        domains[domain] = {
+            "percent": round(percent, 2),
+            "n_items_scored": n_items_scored,
+            "n_items_total": len(item_ids)
+        }
+        total_items_scored += n_items_scored
+        total_items += len(item_ids)
+        total_score += (percent / 100.0) * (len(item_ids) * MAX_ITEM_SCORE)
+
+    max_possible_all = total_items * MAX_ITEM_SCORE if total_items > 0 else 1
+    total_percent = (total_score / max_possible_all) * 100.0
+
+    return {
+        "scale": scale,
+        "domains": domains,
+        "total_percent": round(total_percent, 2),
+        "items_scored": total_items_scored,
+        "items_total": total_items,
+    }</code></pre>
+    </div>
+
+    <h2 id="layer-data">4. Data Layer (Persistence & Security)</h2>
+    <p>Located in <code>src/gmfm_app/data/</code>, this layer handles all interactions with the local SQLite storage:</p>
+    <ul>
+      <li><strong>Dual-Model Pattern</strong>: Employs Pydantic models for compile-time validation, while maintaining pure Python dataclass fallbacks for Android environments where C-extensions may be restricted.</li>
+      <li><strong>Repository Pattern</strong>: <code>StudentRepository</code>, <code>SessionRepository</code>, and <code>UserRepository</code> encapsulate all SQL queries, automatic encryption of sensitive fields, and change queue logging.</li>
+      <li><strong>DatabaseContext</strong>: Provides connection pooling, ensures foreign key enforcement (<code>PRAGMA foreign_keys = ON</code>), and injects cryptography providers.</li>
+    </ul>
+
+    <h2 id="nav-lock">5. Navigation Stack & Anti-Race Controller</h2>
+    <div class="admonition tip">
+      <div class="admonition-title">Android Gesture Navigation Race Solution</div>
+      On mobile devices (notably Android 13/14), rapid edge-swipe back gestures can trigger multiple asynchronous route transitions within milliseconds, which previously caused blank screens due to stack desynchronization. 
+    </div>
+    <p>MotorMeasure Pro resolves this through an internal re-entrant navigation lock (<code>self._nav_lock</code>) in <code>GMFMApp</code>. When a route transition begins, subsequent requests are discarded or deferred until the active <code>ft.View</code> tree has committed and updated the display buffer.</p>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="index.html" class="bottom-nav-title">Architecture Overview</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="data-flow.html" class="bottom-nav-title">Data Flow & Pipelines</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

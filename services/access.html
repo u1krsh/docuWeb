@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Scoping & Roles — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Services Overview</a></li>
+  <li><a href="auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="access.html" class="active">Access Scoping & Roles</a></li>
+  <li><a href="hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Services</a> <span>»</span> <span>Access Control</span>
+      </div>
+      
+    <h1>Access Scoping & Role Isolation Service</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Fail-Closed Scoping</div>
+      <code>AccessService</code> (<code>src/gmfm_app/services/access_service.py</code>) enforces data authorization boundaries across local repositories. If access resolution encounters an error, it <strong>fails closed</strong>, returning an empty student set.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#roles">1. User Role Definitions</a></li>
+        <li><a href="#access-scope">2. The AccessScope Dataclass</a></li>
+        <li><a href="#scoping-math">3. Mathematical Scope Resolution</a></li>
+      </ul>
+    </div>
+
+    <h2 id="roles">1. User Role Definitions</h2>
+    <table>
+      <thead>
+        <tr><th>Role</th><th>Student Data Scope</th><th>Write Permitted</th><th>Admin Console</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>admin</strong></td>
+          <td>Unrestricted (sees all local students)</td>
+          <td>Yes</td>
+          <td>Yes (Full user management)</td>
+        </tr>
+        <tr>
+          <td><strong>teacher</strong></td>
+          <td>Owned students &cup; Co-taught shared students</td>
+          <td>Yes</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><strong>parent</strong></td>
+          <td>Only explicitly linked children (via <code>student_access</code>)</td>
+          <td>No (Strictly Read-Only)</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><strong>sponsor</strong></td>
+          <td>Aggregate clinical statistics only</td>
+          <td>No (Strictly Read-Only)</td>
+          <td>No</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="access-scope">2. The AccessScope Dataclass</h2>
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/services/access_service.py</span><span>AccessScope Contract</span></div>
+      <pre><code>@dataclass
+class AccessScope:
+    user_id: Optional[int]
+    visible_ids: Optional[Set[int]]  # Set of permitted IDs (None = unrestricted)
+    can_write: bool                  # Gating flag for mutations
+    is_admin: bool                   # Admin privileges
+    role: str                        # Active role string
+    unrestricted: bool = False       # True only for admin</code></pre>
+    </div>
+
+    <h2 id="scoping-math">3. Mathematical Scope Resolution</h2>
+    <p>For a non-admin user with ID \( u \), the set of visible student identifiers \( V_u \) is formulated as:</p>
+    <div class="code-container">
+      <div class="code-header"><span>SQL Scope Query</span><span>Union Operation</span></div>
+      <pre><code>SELECT id FROM students WHERE user_id = :uid
+UNION
+SELECT student_id FROM student_access WHERE user_id = :uid;</code></pre>
+    </div>
+    <p>This single SQL query resolves both direct ownership and delegated co-teaching or parental visibility in \( O(1) \) database time.</p>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="reports.html" class="bottom-nav-title">3-Tier PDF Pipeline</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="hardware.html" class="bottom-nav-title">Hardware & Import Services</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

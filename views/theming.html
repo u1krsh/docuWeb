@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Theming & Color Tokens — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">UI Architecture & Routing</a></li>
+  <li><a href="screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="theming.html" class="active">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Views</a> <span>»</span> <span>Theming</span>
+      </div>
+      
+    <h1>Visual Theming & Color Tokens</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Design Token System</div>
+      Visual tokens are centralized in <code>src/gmfm_app/theme.py</code>. Views consume color tokens dynamically via <code>get_colors(is_dark: bool)</code>, ensuring consistent branding and full dark mode support.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#brand">1. Brand Palette Tokens</a></li>
+        <li><a href="#domains">2. Domain Color Coding System</a></li>
+        <li><a href="#dark">3. Dark Mode &amp; Contrast Adaptation</a></li>
+      </ul>
+    </div>
+
+    <h2 id="brand">1. Brand Palette Tokens</h2>
+    <table>
+      <thead>
+        <tr><th>Token Name</th><th>Hex Value</th><th>Preview</th><th>Clinical Usage</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>PRIMARY</code></td>
+          <td><code>#0D9488</code></td>
+          <td><span style="background:#0D9488; color:white; padding:2px 10px; border-radius:3px;">Teal 600</span></td>
+          <td>Primary buttons, total score badges, app bar accent.</td>
+        </tr>
+        <tr>
+          <td><code>SECONDARY</code></td>
+          <td><code>#7C3AED</code></td>
+          <td><span style="background:#7C3AED; color:white; padding:2px 10px; border-radius:3px;">Purple 600</span></td>
+          <td>Comparison highlights, secondary action links.</td>
+        </tr>
+        <tr>
+          <td><code>SUCCESS</code></td>
+          <td><code>#10B981</code></td>
+          <td><span style="background:#10B981; color:white; padding:2px 10px; border-radius:3px;">Emerald 500</span></td>
+          <td>Completed items, score 3 pills, online sync indicator.</td>
+        </tr>
+        <tr>
+          <td><code>WARNING</code></td>
+          <td><code>#F59E0B</code></td>
+          <td><span style="background:#F59E0B; color:white; padding:2px 10px; border-radius:3px;">Amber 500</span></td>
+          <td>Score 2 pills, pending sync notifications.</td>
+        </tr>
+        <tr>
+          <td><code>ERROR</code></td>
+          <td><code>#EF4444</code></td>
+          <td><span style="background:#EF4444; color:white; padding:2px 10px; border-radius:3px;">Red 500</span></td>
+          <td>Score 0 pills, validation errors, offline warning.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="domains">2. Domain Color Coding System</h2>
+    <p>To reduce cognitive load during multi-item testing, each motor dimension is assigned a distinct functional color and Material icon:</p>
+
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Domain Title</th><th>Color Hex</th><th>Material Icon</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dimension A</strong></td>
+          <td>Lying &amp; Rolling</td>
+          <td><strong style="color:#EF4444;">#EF4444</strong></td>
+          <td><code>hotel</code></td>
+        </tr>
+        <tr>
+          <td><strong>Dimension B</strong></td>
+          <td>Sitting</td>
+          <td><strong style="color:#F59E0B;">#F59E0B</strong></td>
+          <td><code>weekend</code></td>
+        </tr>
+        <tr>
+          <td><strong>Dimension C</strong></td>
+          <td>Crawling &amp; Kneeling</td>
+          <td><strong style="color:#10B981;">#10B981</strong></td>
+          <td><code>child_care</code></td>
+        </tr>
+        <tr>
+          <td><strong>Dimension D</strong></td>
+          <td>Standing</td>
+          <td><strong style="color:#3B82F6;">#3B82F6</strong></td>
+          <td><code>accessibility_new</code></td>
+        </tr>
+        <tr>
+          <td><strong>Dimension E</strong></td>
+          <td>Walking &amp; Running</td>
+          <td><strong style="color:#8B5CF6;">#8B5CF6</strong></td>
+          <td><code>directions_run</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="dark">3. Dark Mode &amp; Contrast Adaptation</h2>
+    <p>MotorMeasure Pro provides complete light and dark themes. The active preference is stored in <code>page.client_storage</code> and restored on launch:</p>
+    <ul>
+      <li><strong>Dark Background (<code>DARK_BG</code>)</strong>: <code>#0F172A</code> (Slate 900). Reduces glare in dimmed clinical treatment rooms.</li>
+      <li><strong>Light Background (<code>LIGHT_BG</code>)</strong>: <code>#F8FAFC</code> (Slate 50). Optimized for brightly lit therapy centers.</li>
+    </ul>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="screens.html" class="bottom-nav-title">Screen Inventory & Workflows</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../security/index.html" class="bottom-nav-title">Security & Encryption Model</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

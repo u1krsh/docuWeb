@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation Home — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="index.html">Home</a>
+      <a href="architecture/index.html">Architecture</a>
+      <a href="scoring/index.html">Scoring Engine</a>
+      <a href="data/index.html">Data Layer</a>
+      <a href="services/index.html">Services</a>
+      <a href="views/index.html">Views</a>
+      <a href="security/index.html">Security</a>
+      <a href="deployment/index.html">Deployment</a>
+      <a href="api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="architecture/index.html">Architecture Overview</a></li>
+  <li><a href="architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="data/index.html">Data Layer Overview</a></li>
+  <li><a href="data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="database/index.html">Database Architecture</a></li>
+  <li><a href="database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="services/index.html">Services Overview</a></li>
+  <li><a href="services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="index.html">Docs</a> <span>»</span> <span>Home</span>
+      </div>
+      
+    <h1>The MotorMeasure Pro Documentation</h1>
+    
+    <div class="admonition note">
+      <div class="admonition-title">Project Purpose & Scope</div>
+      <strong>MotorMeasure Pro</strong> (repository: <code>GMFM_System88</code>) is an offline-first, cross-platform clinical assessment application that digitizes the <strong>Gross Motor Function Measure (GMFM-88 / GMFM-66)</strong> scoring protocol. It is engineered specifically for physiotherapists, clinicians, occupational therapists, educators, and rehabilitation centers working with children with cerebral palsy and other motor disabilities.
+    </div>
+
+    <p>This documentation manual is formatted in the technical style of <a href="https://docs.kernel.org/" target="_blank">docs.kernel.org</a>. It serves as the definitive reference for the system architecture, mathematical scoring formulation, offline-to-cloud synchronization engine, cryptography subsystem, database schemas, and developer APIs.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#about">1. Executive Summary & Clinical Context</a></li>
+        <li><a href="#quickstart">2. Quick Start & Execution Commands</a></li>
+        <li><a href="#subsystems">3. Core Subsystems & Navigation Index</a></li>
+        <li><a href="#spec">4. System Specification Table</a></li>
+        <li><a href="#citation">5. Clinical Citations & Governance</a></li>
+      </ul>
+    </div>
+
+    <h2 id="about">1. Executive Summary & Clinical Context</h2>
+    <p>The Gross Motor Function Measure (GMFM) is the internationally recognized gold standard clinical evaluation tool for assessing motor skill execution in pediatric rehabilitation. Historically, assessments have been recorded manually on paper score sheets, leading to significant administrative friction:</p>
+    <ul>
+      <li>Repeated manual entry of patient identifiable information across paper forms.</li>
+      <li>Manual error-prone score summation across 88 individual criteria across 5 complex motor dimensions.</li>
+      <li>Calculation of per-domain percentages and weighted total scores by hand or auxiliary spreadsheets.</li>
+      <li>Difficulty tracking longitudinal motor trajectories across multi-year rehabilitation intervals.</li>
+      <li>Absence of structured multi-role visibility for multidisciplinary teams (clinicians, school educators, parents, and healthcare sponsors).</li>
+    </ul>
+
+    <p><strong>MotorMeasure Pro</strong> provides an end-to-end digital clinical workflow that eliminates paper-based errors while strictly preserving clinical fidelity. Most importantly, it is built with an <strong>offline-first architecture</strong>, guaranteeing full assessment functionality in remote clinics, rural rehabilitation centers, or schools without internet access.</p>
+
+    <h2 id="quickstart">2. Quick Start & Execution Commands</h2>
+    <p>The application runs on Android, iOS, Windows, macOS, and Linux from a single unified Python and Flet codebase.</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Terminal / Command Prompt</span><span>Setup & Run</span></div>
+      <pre><code># 1. Clone repository
+git clone https://github.com/yourusername/GMFM_System88.git
+cd GMFM_System88
+
+# 2. Setup virtual environment
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+source .venv/bin/activate
+
+# 3. Install dependencies
+pip install -r src/requirements.txt
+
+# 4. Launch desktop development runtime
+python -m gmfm_app.main
+
+# 5. Build native Android APK (Flet build)
+flet build apk --product MotorMeasure --project MotorMeasure --org com.motormeasure --target src/gmfm_app/main.py</code></pre>
+    </div>
+
+    <h2 id="subsystems">3. Core Subsystems & Navigation Index</h2>
+    <p>Explore the major architectural and functional manuals of MotorMeasure Pro:</p>
+
+    <div class="docu-grid">
+      <a class="docu-card" href="architecture/index.html">
+        <h3>Architecture & Design</h3>
+        <p>Presentation, business logic, domain scoring, and persistence layers. Deep dive into mobile vs desktop runtimes.</p>
+      </a>
+      <a class="docu-card" href="scoring/index.html">
+        <h3>Clinical Domain & Scoring</h3>
+        <p>Mathematical scoring formulation, Dimensions A through E, 88 standard items catalog, and missing-data handling.</p>
+      </a>
+      <a class="docu-card" href="data/index.html">
+        <h3>Data Models & Repositories</h3>
+        <p>Dual Pydantic/dataclass schema fallback pattern, per-user data isolation, and repository query scoping.</p>
+      </a>
+      <a class="docu-card" href="database/index.html">
+        <h3>Database & Schemas</h3>
+        <p>SQLite local schema, Supabase PostgreSQL cloud backend, 13 automated schema migrations, and RLS policies.</p>
+      </a>
+      <a class="docu-card" href="services/index.html">
+        <h3>Services & Subsystems</h3>
+        <p>PBKDF2 authentication, background sync engine, triple-tier PDF pipeline, and access control.</p>
+      </a>
+      <a class="docu-card" href="views/index.html">
+        <h3>User Interface & Views</h3>
+        <p>Flet native UI system, 10 screen workflows, clinical color tokens, and Android gesture navigation lock.</p>
+      </a>
+      <a class="docu-card" href="security/index.html">
+        <h3>Security & Cryptography</h3>
+        <p>Fernet symmetric field encryption at rest, key derivation, cloud RLS security definers, and threat analysis.</p>
+      </a>
+      <a class="docu-card" href="deployment/index.html">
+        <h3>Deployment & Packaging</h3>
+        <p>Android packaging with Serious Python runtime, base64 asset embedding, and platform deployment guidelines.</p>
+      </a>
+      <a class="docu-card" href="testing/index.html">
+        <h3>Testing & Verification</h3>
+        <p>Unit test suite, GMFM mathematical oracle verification, DOCX parser testing, and validation plan.</p>
+      </a>
+      <a class="docu-card" href="development/index.html">
+        <h3>Development & Roadmap</h3>
+        <p>4-month development journey narrative, Git commit timeline, refactoring phases, and upcoming milestones.</p>
+      </a>
+      <a class="docu-card" href="api/index.html">
+        <h3>Complete API Reference</h3>
+        <p>Comprehensive class, method, type annotation, and constant reference across all modules.</p>
+      </a>
+    </div>
+
+    <h2 id="spec">4. System Specification Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:25%;">System Attribute</th>
+          <th>Implementation Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Product Name</strong></td>
+          <td>MotorMeasure Pro (Repository: <code>GMFM_System88</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Current Release</strong></td>
+          <td>v0.0.3 (Production Hardened)</td>
+        </tr>
+        <tr>
+          <td><strong>Lead Architect / Author</strong></td>
+          <td>Uttkarsh Singh</td>
+        </tr>
+        <tr>
+          <td><strong>Programming Language</strong></td>
+          <td>Python 3.11+</td>
+        </tr>
+        <tr>
+          <td><strong>UI Framework</strong></td>
+          <td>Flet 0.28.3 (Flutter native rendering engine)</td>
+        </tr>
+        <tr>
+          <td><strong>Primary Local Storage</strong></td>
+          <td>SQLite 3 (via standard library <code>sqlite3</code>, connection pooling with <code>DatabaseContext</code>)</td>
+        </tr>
+        <tr>
+          <td><strong>Optional Cloud Backend</strong></td>
+          <td>Supabase (PostgreSQL 15+, GoTrue Auth, Row Level Security)</td>
+        </tr>
+        <tr>
+          <td><strong>Assessment Families</strong></td>
+          <td>GMFM-88 (88 items) and GMFM-66 (subset scale)</td>
+        </tr>
+        <tr>
+          <td><strong>At-Rest Encryption</strong></td>
+          <td>Fernet (AES-128-CBC + HMAC-SHA256, <code>cryptography</code> library)</td>
+        </tr>
+        <tr>
+          <td><strong>Local Password Hashing</strong></td>
+          <td>PBKDF2-HMAC-SHA256 (200,000 iterations, 16-byte cryptographically secure salt)</td>
+        </tr>
+        <tr>
+          <td><strong>PDF Generation Engine</strong></td>
+          <td>3-Tier Fallback: ReportLab &rarr; fpdf2 &rarr; Custom Pure-Python Raw Byte Generator</td>
+        </tr>
+        <tr>
+          <td><strong>Target Operating Systems</strong></td>
+          <td>Android 8.0+ (ARM64/x86_64), iOS 14+, Windows 10/11, macOS, Linux</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="citation">5. Clinical Citations & Governance</h2>
+    <p>The Gross Motor Function Measure instrument implemented by this software is based upon the published research:</p>
+    <ul>
+      <li>Russell, D. J., Rosenbaum, P. L., Cadman, D. T., Gowland, C., Hardy, S., & Jarvis, S. (1989). <em>The gross motor function measure: a means to evaluate the effects of physical therapy.</em> Developmental Medicine & Child Neurology, 31(3), 341-352.</li>
+      <li>Russell, D. J., Rosenbaum, P. L., Avery, L. M., & Lane, M. (2002). <em>Gross Motor Function Measure (GMFM-66 & GMFM-88) User's Manual.</em> Mac Keith Press, London.</li>
+    </ul>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev"></div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="architecture/index.html" class="bottom-nav-title">Architecture Overview</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+             </footer>
+    </main>
+  </div>
+</body>
+</html>

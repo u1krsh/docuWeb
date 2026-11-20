@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Flow & Lifecycle — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Architecture Overview</a></li>
+  <li><a href="layers.html">Layered Architecture</a></li>
+  <li><a href="data-flow.html" class="active">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Architecture</a> <span>»</span> <span>Data Flow</span>
+      </div>
+      
+    <h1>End-to-End Data Flow & Lifecycle</h1>
+
+    <p>This manual traces the exact lifecycle of clinical data across the application: from clinician score input on a mobile touchscreen, through mathematical domain calculation, SQLite persistent storage, audit queue logging, background cloud push, and formal PDF generation.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#flow-assessment">1. Clinical Assessment Entry & Persistence Pipeline</a></li>
+        <li><a href="#flow-sync">2. Offline-First Cloud Synchronization Pipeline</a></li>
+        <li><a href="#flow-report">3. Clinical PDF Generation Pipeline</a></li>
+        <li><a href="#flow-auth">4. Authentication & Role Reconciliation Lifecycle</a></li>
+      </ul>
+    </div>
+
+    <h2 id="flow-assessment">1. Clinical Assessment Entry & Persistence Pipeline</h2>
+    <p>When a therapist conducts a GMFM assessment with a child, data progresses through seven distinct stages:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Pipeline Stages</span><span>Clinical Assessment Flow</span></div>
+      <pre><code>[Clinician Scores Item (0, 1, 2, 3 or NT)]
+                 |
+                 v
+(1) ScoringView: Captures touch event, executes haptic feedback (Haptics.light())
+                 |
+                 v
+(2) State Buffer: Aggregates scores in raw_scores dictionary {item_id: int_score}
+                 |
+                 v
+(3) On Save Trigger: Calls calculate_gmfm_scores(raw_scores, scale="88")
+                 |
+                 v
+(4) Engine Calculation: Computes domain percentages (A-E) and overall percentage
+                 |
+                 v
+(5) Model Construction: Creates Session(student_id=..., raw_scores=..., total_score=...)
+                 |
+                 v
+(6) Repository Execution: SessionRepository.create_session(session)
+     |--> Enforces role write permission (_require_write())
+     |--> INSERT INTO sessions (student_id, scale, raw_scores, total_score, notes, ...)
+     |--> Captures lastrowid as session.id
+                 |
+                 v
+(7) Audit Log: _log_sync(conn, "sessions", session.id, "INSERT", payload)
+     |--> Appends record to sync_queue with synced = 0</code></pre>
+    </div>
+
+    <h2 id="flow-sync">2. Offline-First Cloud Synchronization Pipeline</h2>
+    <p>MotorMeasure Pro implements an autonomous, non-blocking synchronization engine:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Sync Worker Lifecycle</span><span>Background Thread (60s Loop)</span></div>
+      <pre><code>SyncWorker daemon thread wakes (Interval: 60 seconds)
+                 |
+                 v
+(1) Connectivity Probe:
+    Tries Supabase port 443 -> Fallback ping Google DNS (8.8.8.8:53)
+    |-- If OFFLINE: Logs message, sleeps 60s, does NOT attempt network calls.
+    |-- If ONLINE : Continues to Step 2.
+                 |
+                 v
+(2) Offline User Provisioning:
+    Queries app_users where cloud_uid IS NULL
+    |-- If active cloud session matches: Backfills cloud_uid in SQLite
+                 |
+                 v
+(3) Session Authentication Check:
+    Verifies valid JWT in Supabase client
+    |-- If expired: Attempts silent refresh via ~/.gmfm_app/.cloud_token
+                 |
+                 v
+(4) Push Phase (Local -> Cloud):
+    SELECT * FROM sync_queue WHERE synced = 0 ORDER BY id ASC LIMIT 100
+    |-- For each mutation (INSERT, UPDATE, DELETE):
+    |     Executes client.table(table).upsert(cloud_payload)
+    |     UPDATE sync_queue SET synced = 1 WHERE id = ?
+                 |
+                 v
+(5) Pull Phase (Cloud -> Local):
+    SELECT * FROM cloud_table WHERE created_by = self._user_id AND updated_at > last_pull
+    |-- For each incoming record:
+    |     Checks if record has pending local edits in sync_queue!
+    |     * IF PENDING LOCAL CHANGE: Skip (Local Wins conflict rule)
+    |     * IF NO LOCAL CHANGE     : Upsert into local SQLite
+                 |
+                 v
+(6) Commit Metadata:
+    Updates sync_metadata key 'last_pull' with current ISO UTC timestamp.</code></pre>
+    </div>
+
+    <h2 id="flow-report">3. Clinical PDF Generation Pipeline</h2>
+    <p>Exporting an assessment report engages the multi-tier fallback pipeline in <code>ReportService</code>:</p>
+    <ul>
+      <li><strong>Stage 1 - Context Resolution</strong>: Resolves student record (decrypting PII name and medical record identifier), loads session scores, and looks up the assessor's full name via <code>UserRepository</code>.</li>
+      <li><strong>Stage 2 - Backend Probe</strong>:
+        <ol>
+          <li>Checks if <code>reportlab</code> is installed. If yes, builds a styled document flow with embedded Matplotlib trend charts.</li>
+          <li>If ReportLab is unavailable (common in stripped Android Python environments), lazily imports pure-Python <code>fpdf2</code>.</li>
+          <li>If <code>fpdf2</code> is missing, engages the <strong>zero-dependency Raw PDF fallback</strong>, constructing standard PDF 1.4 byte streams directly.</li>
+        </ol>
+      </li>
+      <li><strong>Stage 3 - File Persistence & System Share</strong>: Writes the resulting PDF to the application's <code>reports/</code> directory and triggers native OS viewer intents where supported.</li>
+    </ul>
+
+    <h2 id="flow-auth">4. Authentication & Role Reconciliation Lifecycle</h2>
+    <div class="admonition note">
+      <div class="admonition-title">Authority Boundary</div>
+      While the local SQLite database manages immediate user authorization offline, <strong>Supabase is the ultimate authoritative source of truth for user roles</strong> (governed by the PostgreSQL trigger <code>protect_profile_role()</code>).
+    </div>
+    <p>When an authenticated user signs in:</p>
+    <ol>
+      <li>Local PBKDF2 hash is validated against SQLite <code>app_users</code> table.</li>
+      <li>Session is stored in Flet's encrypted client storage.</li>
+      <li>A background thread triggers <code>AuthService._cloud_provision()</code>.</li>
+      <li>Upon successful cloud authentication, the service fetches <code>profiles.role</code>. If an administrator updated the user's role on the cloud console (e.g. promoting a Teacher to Admin), the local database row is reconciled immediately, and an in-app SnackBar notification alerts the user.</li>
+    </ol>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="layers.html" class="bottom-nav-title">Layered Architecture</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../scoring/index.html" class="bottom-nav-title">GMFM System Overview</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

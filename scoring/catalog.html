@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>88-Item Standard Catalog — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">GMFM System Overview</a></li>
+  <li><a href="algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="domains.html">Dimensions A through E</a></li>
+  <li><a href="catalog.html" class="active">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Clinical Scoring</a> <span>»</span> <span>Item Catalog</span>
+      </div>
+      <h1>88-Item Standardized GMFM Catalog Reference</h1>
+<p>This catalog lists all 88 items from the canonical GMFM instrument loaded dynamically by <code>src/gmfm_app/scoring/items_catalog.py</code>. Items eligible for the Rasch-reduced GMFM-66 subset are explicitly badged.</p>
+<h2>Dimension A: LYING & ROLLING (17 Items)</h2>
+<table>
+<thead>
+<tr><th style='width:8%;'>#</th><th>Item Description</th><th style='width:15%;'>GMFM-66</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>SUP, HEAD IN MIDLINE: TURNS HEAD WITH EXTREMITIES SYMMETRICAL</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>2</strong></td><td>SUP: BRINGS HANDS TO MIDLINE, FINGERS ONE WITH THE OTHER</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>3</strong></td><td>SUP: LIFTS HEAD 45 deg</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>4</strong></td><td>SUP: FLEXES R HIP & KNEE THROUGH FULL RANGE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>5</strong></td><td>SUP: FLEXES L HIP & KNEE THROUGH FULL RANGE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>6</strong></td><td>SUP: REACHES OUT WITH R ARM, HAND CROSSES MIDLINE TOWARD TOY</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>7</strong></td><td>SUP: REACHES OUT WITH L ARM, HAND CROSSES MIDLINE TOWARD TOY</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>8</strong></td><td>SUP: ROLLS TO PR OVER R SIDE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>9</strong></td><td>SUP: ROLLS TO PR OVER L SIDE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>10</strong></td><td>PR: LIFTS HEAD UPRIGHT</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>11</strong></td><td>PR ON FOREARMS: LIFTS HEAD UPRIGHT, ELBOWS EXT., CHEST RAISED</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>12</strong></td><td>PR ON FOREARMS: WEIGHT ON R FOREARM, FULLY EXTENDS OPPOSITE ARM FORWARD</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>13</strong></td><td>PR ON FOREARMS: WEIGHT ON L FOREARM, FULLY EXTENDS OPPOSITE ARM FORWARD</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>14</strong></td><td>PR: ROLLS TO SUP OVER R SIDE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>15</strong></td><td>PR: ROLLS TO SUP OVER L SIDE</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>16</strong></td><td>PR: PIVOTS TO R 90 deg USING EXTREMITIES</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>17</strong></td><td>PR: PIVOTS TO L 90 deg USING EXTREMITIES</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+</tbody>
+</table>
+<h2>Dimension B: SITTING (20 Items)</h2>
+<table>
+<thead>
+<tr><th style='width:8%;'>#</th><th>Item Description</th><th style='width:15%;'>GMFM-66</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>18</strong></td><td>SUP, HANDS GRASPED BY EXAMINER: PULLS SELF TO SITTING WITH HEAD CONTROL</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>19</strong></td><td>SUP: ROLLS TO R SIDE, ATTAINS SITTING</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>20</strong></td><td>SUP: ROLLS TO L SIDE, ATTAINS SITTING</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>21</strong></td><td>SIT ON MAT, SUPPORTED AT THORAX BY THERAPIST: LIFTS HEAD UPRIGHT, MAINTAINS 3 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>22</strong></td><td>SIT ON MAT, SUPPORTED AT THORAX BY THERAPIST: LIFTS HEAD MIDLINE, MAINTAINS 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>23</strong></td><td>SIT ON MAT, ARM(S) PROPPING: MAINTAINS, 5 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>24</strong></td><td>SIT ON MAT: MAINTAIN, ARMS FREE, 3 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>25</strong></td><td>SIT ON MAT WITH SMALL TOY IN FRONT: LEANS FORWARD, TOUCHES TOY, RE-ERECTS WITHOUT ARM PROPPING</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>26</strong></td><td>SIT ON MAT: TOUCHES TOY PLACED 45 deg BEHIND CHILD'S R SIDE, RETURNS TO START</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>27</strong></td><td>SIT ON MAT: TOUCHES TOY PLACED 45 deg BEHIND CHILD'S L SIDE, RETURNS TO START</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>28</strong></td><td>R SIDE SIT: MAINTAINS, ARMS FREE, 5 SECONDS</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>29</strong></td><td>L SIDE SIT: MAINTAINS, ARMS FREE, 5 SECONDS</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>30</strong></td><td>SIT ON MAT: LOWERS TO PR WITH CONTROL</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>31</strong></td><td>SIT ON MAT WITH FEET IN FRONT: ATTAINS 4 POINT OVER R SIDE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>32</strong></td><td>SIT ON MAT WITH FEET IN FRONT: ATTAINS 4 POINT OVER L SIDE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>33</strong></td><td>SIT ON MAT: PIVOTS 90 deg, WITHOUT ARMS ASSISTING</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>34</strong></td><td>SIT ON BENCH: MAINTAINS, ARMS AND FEET FREE, 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>35</strong></td><td>STD: ATTAINS SIT ON SMALL BENCH</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>36</strong></td><td>ON THE FLOOR: ATTAINS SIT ON SMALL BENCH</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>37</strong></td><td>ON THE FLOOR: ATTAINS SIT ON LARGE BENCH</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+</tbody>
+</table>
+<h2>Dimension C: CRAWLING & KNEELING (14 Items)</h2>
+<table>
+<thead>
+<tr><th style='width:8%;'>#</th><th>Item Description</th><th style='width:15%;'>GMFM-66</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>38</strong></td><td>PR: CREEPS FORWARD 1.8m (6')</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>39</strong></td><td>4 POINT: MAINTAINS, WEIGHT ON HANDS AND KNEES, 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>40</strong></td><td>4 POINT: ATTAINS SIT ARMS FREE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>41</strong></td><td>PR: ATTAINS 4 POINT, WEIGHT ON HANDS AND KNEES</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>42</strong></td><td>4 POINT: REACHES FORWARD WITH R ARM, HAND ABOVE SHOULDER LEVEL</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>43</strong></td><td>4 POINT: REACHES FORWARD WITH L ARM, HAND ABOVE SHOULDER LEVEL</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>44</strong></td><td>4 POINT: CRAWLS OR HITCHES FORWARD 1.8m(6')</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>45</strong></td><td>4 POINT: CRAWLS RECIPROCALLY FORWARD 1.8m ( 6')</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>46</strong></td><td>4 POINT: CRAWLS UP 4 STEPS ON HANDS AND KNEES/FEET</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>47</strong></td><td>4 POINT: CRAWLS BACKWARDS DOWN 4 STEPS ON HANDS AND KNEES/FEET</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>48</strong></td><td>SIT ON MAT: ATTAINS HIGH KN USING ARMS, MAINTAINS, ARMS FREE, 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>49</strong></td><td>HIGH KN: ATTAINS HALF KN ON R KNEE USING ARMS, MAINTAINS, ARMS FREE, 10 SECONDS</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>50</strong></td><td>HIGH KN: ATTAINS HALF KN ON L KNEE USING ARMS, MAINTAINS, ARMS FREE, 10 SECONDS</td><td><span style='color:#7f8c8d;'>—</span></td></tr>
+<tr><td><strong>51</strong></td><td>HIGH KN: KN WALKS FORWARD 10 STEPS, ARMS FREE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+</tbody>
+</table>
+<h2>Dimension D: STANDING (13 Items)</h2>
+<table>
+<thead>
+<tr><th style='width:8%;'>#</th><th>Item Description</th><th style='width:15%;'>GMFM-66</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>52</strong></td><td>ON THE FLOOR: PULLS TO STD AT LARGE BENCH</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>53</strong></td><td>STD: MAINTAINS, ARMS FREE, 3 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>54</strong></td><td>STD: HOLDING ON TO LARGE BENCH WITH ONE HAND, LIFTS R FOOT, 3 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>55</strong></td><td>STD: HOLDING ON TO LARGE BENCH WITH ONE HAND, LIFTS L FOOT, 3 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>56</strong></td><td>STD: MAINTAINS, ARMS FREE, 20 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>57</strong></td><td>STD: LIFTS L FOOT, ARMS FREE, 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>58</strong></td><td>STD: LIFTS R FOOT, ARMS FREE, 10 SECONDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>59</strong></td><td>SIT ON SMALL BENCH: ATTAINS STD WITHOUT USING ARMS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>60</strong></td><td>HIGH KN: ATTAINS STD THROUGH HALF KN ON R KNEE, WITHOUT USING ARMS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>61</strong></td><td>HIGH KN: ATTAINS STD THROUGH HALF KN ON L KNEE, WITHOUT USING ARMS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>62</strong></td><td>STD: LOWERS TO SIT ON FLOOR WITH CONTROL, ARMS FREE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>63</strong></td><td>STD: ATTAINS SQUAT, ARMS FREE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>64</strong></td><td>STD: PICKS UP OBJECT FROM FLOOR, ARMS FREE, RETURNS TO STAND</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+</tbody>
+</table>
+<h2>Dimension E: WALKING, RUNNING & JUMPING (24 Items)</h2>
+<table>
+<thead>
+<tr><th style='width:8%;'>#</th><th>Item Description</th><th style='width:15%;'>GMFM-66</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>65</strong></td><td>STD, 2 HANDS ON LARGE BENCH: CRUISES 5 STEPS TO R</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>66</strong></td><td>STD, 2 HANDS ON LARGE BENCH: CRUISES 5 STEPS TO L</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>67</strong></td><td>STD, 2 HANDS HELD: WALKS FORWARD 10 STEPS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>68</strong></td><td>STD, 1 HAND HELD: WALKS FORWARD 10 STEPS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>69</strong></td><td>STD: WALKS FORWARD 10 STEPS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>70</strong></td><td>STD: WALKS FORWARD 10 STEPS, STOPS, TURNS 180 deg, RETURNS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>71</strong></td><td>STD: WALKS BACKWARD 10 STEPS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>72</strong></td><td>STD: WALKS FORWARD 10 STEPS, CARRYING A LARGE OBJECT WITH 2 HANDS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>73</strong></td><td>STD: WALKS FORWARD 10 CONSECUTIVE STEPS BETWEEN PARALLEL LINES 20cm (8") APART</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>74</strong></td><td>STD: WALKS FORWARD 10 CONSECUTIVE STEPS ON A STRAIGHT LINE 2cm (3/4") WIDE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>75</strong></td><td>STD: STEPS OVER STICK AT KNEE LEVEL, R FOOT LEADING</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>76</strong></td><td>STD: STEPS OVER STICK AT KNEE LEVEL, L FOOT LEADING</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>77</strong></td><td>STD: RUNS 4.5m (15'), STOPS & RETURNS</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>78</strong></td><td>STD: KICKS BALL WITH R FOOT</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>79</strong></td><td>STD: KICKS BALL WITH L FOOT</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>80</strong></td><td>STD: JUMPS 30cm (12") HIGH, BOTH FEET SIMULTANEOUSLY</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>81</strong></td><td>STD: JUMPS FORWARD 30 cm (12"), BOTH FEET SIMULTANEOUSLY</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>82</strong></td><td>STD ON R FOOT: HOPS ON R FOOT 10 TIMES WITHIN A 60cm (24") CIRCLE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>83</strong></td><td>STD ON L FOOT: HOPS ON L FOOT 10 TIMES WITHIN A 60cm (24") CIRCLE</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>84</strong></td><td>STD, HOLDING 1 RAIL: WALKS UP 4 STEPS, HOLDING 1 RAIL, ALTERNATING FEET</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>85</strong></td><td>STD, HOLDING 1 RAIL: WALKS DOWN 4 STEPS, HOLDING 1 RAIL, ALTERNATING FEET</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>86</strong></td><td>STD: WALKS UP 4 STEPS, ALTERNATING FEET</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>87</strong></td><td>STD: WALKS DOWN 4 STEPS, ALTERNATING FEET</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+<tr><td><strong>88</strong></td><td>STD ON 15cm (6") STEP: JUMPS OFF, BOTH FEET SIMULTANEOUSLY</td><td><span style='color:#27ae60; font-weight:bold;'>✓ Included</span></td></tr>
+</tbody>
+</table>
+
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="domains.html" class="bottom-nav-title">Dimensions A through E</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../data/index.html" class="bottom-nav-title">Data Layer Overview</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

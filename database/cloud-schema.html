@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Schema & RLS — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Database Architecture</a></li>
+  <li><a href="local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="cloud-schema.html" class="active">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Database</a> <span>»</span> <span>Cloud Schema</span>
+      </div>
+      
+    <h1>Supabase PostgreSQL Schema & Row Level Security</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Production Cloud Schema</div>
+      The cloud schema is defined in <code>supabase_schema.sql</code> and executed in Supabase's PostgreSQL engine. It establishes a multi-tenant clinical data store with strict Row-Level Security (RLS) enforcement.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#tables">1. Cloud PostgreSQL Tables</a></li>
+        <li><a href="#recursion">2. Breaking RLS Recursion with Security Definers</a></li>
+        <li><a href="#rls">3. Complete Row-Level Security Policy Matrix</a></li>
+        <li><a href="#trigger">4. Cloud Role Protection Trigger</a></li>
+      </ul>
+    </div>
+
+    <h2 id="tables">1. Cloud PostgreSQL Tables</h2>
+    <p>Cloud records store both their remote PostgreSQL UUID/Identity and their originating <code>local_id</code> (SQLite ID) along with <code>created_by</code> (Supabase Auth UID):</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>PostgreSQL DDL</span><span>Supabase Schema</span></div>
+      <pre><code>CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username TEXT UNIQUE,
+  full_name TEXT NOT NULL DEFAULT '',
+  role TEXT NOT NULL DEFAULT 'teacher', -- 'admin'|'teacher'|'parent'|'sponsor'
+  email TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE students (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  created_by UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  local_id INTEGER NOT NULL,
+  given_name TEXT DEFAULT '',
+  family_name TEXT DEFAULT '',
+  dob TEXT,
+  identifier TEXT,
+  deleted BOOLEAN DEFAULT FALSE,       -- Soft delete marker
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(created_by, local_id)
+);
+
+CREATE TABLE sessions (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  created_by UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  local_id INTEGER NOT NULL,
+  student_local_id INTEGER NOT NULL DEFAULT 0,
+  scale TEXT DEFAULT '88',
+  raw_scores TEXT DEFAULT '{}',
+  total_score REAL DEFAULT 0,
+  notes TEXT,
+  deleted BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(created_by, local_id)
+);
+
+CREATE TABLE student_access (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  student_id BIGINT NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  access_level TEXT NOT NULL DEFAULT 'view',
+  granted_by UUID REFERENCES profiles(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(student_id, user_id)
+);</code></pre>
+    </div>
+
+    <h2 id="recursion">2. Breaking RLS Recursion with Security Definers</h2>
+    <div class="admonition important">
+      <div class="admonition-title">Infinite Recursion Prevention</div>
+      In PostgreSQL, when Table A's RLS policy queries Table B, and Table B's policy queries Table A, PostgreSQL halts queries with an infinite recursion error. 
+    </div>
+    <p>MotorMeasure Pro resolves this by declaring all access evaluation helpers with <code>SECURITY DEFINER STABLE</code>. This executes the check under the database owner's privileges, bypassing RLS during policy evaluation:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>PostgreSQL Functions</span><span>Security Definer Helpers</span></div>
+      <pre><code>CREATE OR REPLACE FUNCTION is_admin()
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+  );
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+
+CREATE OR REPLACE FUNCTION user_has_student_access(p_student_id BIGINT)
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM student_access WHERE student_id = p_student_id AND user_id = auth.uid()
+  );
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
+
+CREATE OR REPLACE FUNCTION user_owns_student(p_student_id BIGINT)
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM students WHERE id = p_student_id AND created_by = auth.uid()
+  );
+$$ LANGUAGE sql SECURITY DEFINER STABLE;</code></pre>
+    </div>
+
+    <h2 id="rls">3. Complete Row-Level Security Policy Matrix</h2>
+    <table>
+      <thead>
+        <tr><th>Table</th><th>SELECT Policy</th><th>INSERT Policy</th><th>UPDATE Policy</th><th>DELETE Policy</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>profiles</strong></td>
+          <td><code>id = auth.uid() OR is_admin()</code></td>
+          <td><code>auth.uid() = id</code></td>
+          <td><code>auth.uid() = id OR is_admin()</code></td>
+          <td>Restricted (Admin only via service key)</td>
+        </tr>
+        <tr>
+          <td><strong>students</strong></td>
+          <td><code>created_by = auth.uid() OR is_admin() OR user_has_student_access(id)</code></td>
+          <td><code>created_by = auth.uid()</code></td>
+          <td><code>created_by = auth.uid() OR is_admin() OR user_has_student_access_level(id, ARRAY['edit','owner'])</code></td>
+          <td><code>created_by = auth.uid() OR is_admin()</code></td>
+        </tr>
+        <tr>
+          <td><strong>sessions</strong></td>
+          <td><code>created_by = auth.uid() OR is_admin() OR user_can_access_session(created_by, student_local_id, FALSE)</code></td>
+          <td><code>created_by = auth.uid()</code></td>
+          <td><code>created_by = auth.uid() OR is_admin()</code></td>
+          <td><code>created_by = auth.uid() OR is_admin()</code></td>
+        </tr>
+        <tr>
+          <td><strong>student_access</strong></td>
+          <td><code>user_id = auth.uid() OR is_admin() OR user_owns_student(student_id)</code></td>
+          <td><code>(is_admin() OR user_owns_student(student_id)) AND access_level IN ('view','edit')</code></td>
+          <td>Disabled</td>
+          <td><code>is_admin() OR user_owns_student(student_id)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="trigger">4. Cloud Role Protection Trigger</h2>
+    <p>To prevent malicious privilege escalation (e.g. a teacher account submitting a PATCH request altering their role to <code>admin</code>), a PostgreSQL trigger intercepts all mutations on <code>profiles</code>:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>PostgreSQL Trigger</span><span>protect_profile_role()</span></div>
+      <pre><code>CREATE OR REPLACE FUNCTION protect_profile_role()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    IF NEW.role NOT IN ('admin', 'teacher', 'parent', 'sponsor') THEN
+      NEW.role := 'teacher';
+    END IF;
+  ELSIF TG_OP = 'UPDATE' THEN
+    -- Only an existing admin may alter another profile's role
+    IF NEW.role IS DISTINCT FROM OLD.role AND NOT is_admin() THEN
+      NEW.role := OLD.role;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;</code></pre>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="local-schema.html" class="bottom-nav-title">Local SQLite Schema</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="migrations.html" class="bottom-nav-title">13 Schema Migrations</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

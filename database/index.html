@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Architecture — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Database Architecture</a></li>
+  <li><a href="local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Database</span>
+      </div>
+      
+    <h1>Database Architecture Overview</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Dual Database Topology</div>
+      MotorMeasure Pro couples an <strong>embedded local SQLite store</strong> with an <strong>optional cloud PostgreSQL backend on Supabase</strong>. This provides immediate offline access on edge devices while enabling collaborative cloud synchronization.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#topology">1. Local-to-Cloud Database Topology</a></li>
+        <li><a href="#sqlite-res">2. Multi-Platform SQLite Path Resolution</a></li>
+        <li><a href="#subpages">3. Database Documentation Manuals</a></li>
+      </ul>
+    </div>
+
+    <h2 id="topology">1. Local-to-Cloud Database Topology</h2>
+    <p>The system avoids direct networked database drivers (e.g. connecting directly over psycopg2 to Postgres). Instead, the mobile/desktop app interacts exclusively with an embedded SQLite database. All cloud synchronization occurs via HTTPS REST APIs managed by the <code>SyncService</code>:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Storage Architecture</span><span>Topology Mapping</span></div>
+      <pre><code>[Clinician Device (Phone / Tablet / Desktop)]
+  |
+  +--> Application Code & Views
+         |
+         v
+  +--> SQLite (gmfm_app.db)  <--- Single Source of Truth Offline
+         |
+         v
+  +--> sync_queue (Audit log of local mutations)
+         |
+      (Asynchronous HTTP REST via Supabase SDK)
+         |
+         v
+[Cloud Backend: Supabase Managed PostgreSQL]
+  |--> profiles
+  |--> students
+  |--> sessions
+  |--> student_access
+  |--> Row Level Security (RLS) & Security Definer Functions</code></pre>
+    </div>
+
+    <h2 id="sqlite-res">2. Multi-Platform SQLite Path Resolution</h2>
+    <p>Finding a reliable writable path for SQLite across Android, iOS, Windows, macOS, and Linux requires defensive fallback logic, implemented in <code>resolve_db_path()</code>:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/data/database.py</span><span>Path Resolution Waterfall</span></div>
+      <pre><code>def resolve_db_path(explicit: Optional[str] = None) -> Path:
+    if explicit:
+        return Path(explicit).expanduser().resolve()
+    
+    # 1. On Android/iOS, check FLET_APP_STORAGE_DATA (isolated app storage)
+    flet_storage = os.getenv("FLET_APP_STORAGE_DATA")
+    if flet_storage:
+        app_dir = Path(flet_storage) / ".gmfm_data"
+        try:
+            app_dir.mkdir(parents=True, exist_ok=True)
+            return app_dir / APP_DB_NAME
+        except Exception:
+            pass
+    
+    # 2. Desktop standard: Path.home() / .gmfm_app
+    try:
+        home = Path.home()
+        app_dir = home / ".gmfm_app"
+        app_dir.mkdir(parents=True, exist_ok=True)
+        return app_dir / APP_DB_NAME
+    except Exception:
+        # 3. Emergency fallback to Current Working Directory
+        app_dir = Path(".") / ".gmfm_data"
+        app_dir.mkdir(parents=True, exist_ok=True)
+        return app_dir / APP_DB_NAME</code></pre>
+    </div>
+
+    <h2 id="subpages">3. Database Documentation Manuals</h2>
+    <div class="docu-grid">
+      <a class="docu-card" href="local-schema.html">
+        <h3>Local SQLite Schema</h3>
+        <p>Full DDL for all 7 local tables: students, sessions, app_users, student_access, sync_queue, sync_metadata, and settings.</p>
+      </a>
+      <a class="docu-card" href="cloud-schema.html">
+        <h3>Supabase PostgreSQL &amp; RLS</h3>
+        <p>Cloud PostgreSQL DDL, foreign key relationships, Row-Level Security policies, and recursion-breaking security definers.</p>
+      </a>
+      <a class="docu-card" href="migrations.html">
+        <h3>13 Schema Migrations</h3>
+        <p>Automated in-code migration sequence from initial v0.0.1 patients schema to current multi-role relationship architecture.</p>
+      </a>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../data/repositories.html" class="bottom-nav-title">Repositories & Scoping</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="local-schema.html" class="bottom-nav-title">Local SQLite Schema</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repositories & Scoping — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Data Layer Overview</a></li>
+  <li><a href="models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="repositories.html" class="active">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Data Layer</a> <span>»</span> <span>Repositories</span>
+      </div>
+      
+    <h1>Repositories & Scoped Query Execution</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Data Access Abstraction</div>
+      All SQLite queries are isolated inside specialized repositories in <code>src/gmfm_app/data/repositories.py</code>. Repositories enforce role scoping, automatic encryption/decryption, and change queue auditing.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#base">1. BaseRepository &amp; Scoping Predicates</a></li>
+        <li><a href="#student-repo">2. StudentRepository Methods</a></li>
+        <li><a href="#session-repo">3. SessionRepository Methods</a></li>
+        <li><a href="#user-repo">4. UserRepository Methods</a></li>
+        <li><a href="#sync-logger">5. Transaction Sync Logging (_log_sync)</a></li>
+      </ul>
+    </div>
+
+    <h2 id="base">1. BaseRepository &amp; Scoping Predicates</h2>
+    <p>Every repository inherits from <code>BaseRepository</code>, which dynamically constructs SQL WHERE clauses to enforce data isolation:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/data/repositories.py</span><span>BaseRepository Scoping</span></div>
+      <pre><code>class BaseRepository:
+    def __init__(self, db_context=None, user_id=None, visible_ids=None,
+                 can_write=True, unrestricted=False):
+        self.db_context = db_context or DatabaseContext()
+        self.user_id = user_id
+        self.visible_ids = visible_ids  # Set of permitted student IDs
+        self.can_write = can_write      # False for parent / sponsor
+        self.unrestricted = unrestricted # True only for admin
+
+    def _student_scope(self, col: str = "id", owner_col: str = "user_id"):
+        if self.unrestricted:
+            return "1 = 1", []
+        if self.visible_ids is not None:
+            if not self.visible_ids:
+                return "0 = 1", []
+            marks = ",".join("?" * len(self.visible_ids))
+            return f"{col} IN ({marks})", list(self.visible_ids)
+        if self.user_id is not None:
+            return f"{owner_col} = ?", [self.user_id]
+        return "1 = 1", []
+
+    def _require_write(self) -> None:
+        if not self.can_write:
+            raise PermissionError("This account has read-only access")</code></pre>
+    </div>
+
+    <h2 id="student-repo">2. StudentRepository Methods</h2>
+    <table>
+      <thead>
+        <tr><th>Method Signature</th><th>Action Performed</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>list_students(limit=50) -> List[Student]</code></td>
+          <td>Retrieves students permitted within the caller's scope, ordered by creation date descending. Decrypts PII fields.</td>
+        </tr>
+        <tr>
+          <td><code>get_student(student_id: int) -> Optional[Student]</code></td>
+          <td>Retrieves and decrypts a single student by primary key if permitted by scope.</td>
+        </tr>
+        <tr>
+          <td><code>create_student(student: Student) -> Student</code></td>
+          <td>Enforces <code>_require_write()</code>, encrypts PII fields, inserts student, creates owner access link in <code>student_access</code>, and logs an INSERT to <code>sync_queue</code>.</td>
+        </tr>
+        <tr>
+          <td><code>update_student(student: Student) -> Student</code></td>
+          <td>Re-encrypts updated PII fields, commits UPDATE within scope, and logs mutation to <code>sync_queue</code>.</td>
+        </tr>
+        <tr>
+          <td><code>delete_student(student_id: int) -> None</code></td>
+          <td>Deletes student record, cascades deletions across <code>student_access</code>, and logs a DELETE tombstone to <code>sync_queue</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="session-repo">3. SessionRepository Methods</h2>
+    <table>
+      <thead>
+        <tr><th>Method Signature</th><th>Action Performed</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>create_session(session: Session) -> Session</code></td>
+          <td>Serializes raw score dictionary to JSON, inserts into <code>sessions</code>, and logs INSERT to <code>sync_queue</code>.</td>
+        </tr>
+        <tr>
+          <td><code>get_session(session_id: int) -> Optional[Session]</code></td>
+          <td>Retrieves session within student scope and unpacks JSON raw scores into integer dictionary.</td>
+        </tr>
+        <tr>
+          <td><code>list_sessions_for_student(student_id: int) -> List[Session]</code></td>
+          <td>Returns all longitudinal assessment sessions for a specific child, sorted newest first.</td>
+        </tr>
+        <tr>
+          <td><code>get_recent_sessions(limit: int = 3) -> List[dict]</code></td>
+          <td>Executes an optimized JOIN between sessions and students to populate the dashboard with recent evaluations.</td>
+        </tr>
+        <tr>
+          <td><code>get_dashboard_stats() -> dict</code></td>
+          <td>Calculates total session counts and overall average score across visible students in a single SQL aggregation.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="user-repo">4. UserRepository Methods</h2>
+    <p>Provides identity lookups for local authentication:</p>
+    <ul>
+      <li><code>count_users() -> int</code>: Used during initialization to bootstrap the very first registered user as <code>admin</code>.</li>
+      <li><code>get_by_username(username: str) -> Optional[AppUser]</code>: Normalizes username to lowercase and returns credential hash.</li>
+      <li><code>get_by_email(email: str) -> Optional[AppUser]</code>: Resolves user for cloud synchronization and password reset.</li>
+      <li><code>update_role(user_id: int, role: str) -> None</code>: Reconciles local user role after cloud sign-in.</li>
+      <li><code>update_cloud_uid(user_id: int, cloud_uid: str) -> None</code>: Binds a local user ID to a Supabase UUID.</li>
+    </ul>
+
+    <h2 id="sync-logger">5. Transaction Sync Logging (_log_sync)</h2>
+    <p>Whenever a repository commits a state change, it invokes <code>_log_sync()</code> within the active database transaction:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/data/repositories.py</span><span>Audit Logging Function</span></div>
+      <pre><code>def _log_sync(conn, table_name: str, record_id: int, operation: str, payload: dict):
+    try:
+        conn.cursor().execute(
+            '''INSERT INTO sync_queue 
+               (table_name, record_id, operation, payload, created_at, synced) 
+               VALUES (?, ?, ?, ?, ?, 0)''',
+            (table_name, record_id, operation, json.dumps(payload), datetime.utcnow().isoformat())
+        )
+    except Exception:
+        # Failure in audit logging must not abort the primary clinical write
+        pass</code></pre>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="models.html" class="bottom-nav-title">Domain Models (Dual Pattern)</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../database/index.html" class="bottom-nav-title">Database Architecture</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Inventory & Workflows — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">UI Architecture & Routing</a></li>
+  <li><a href="screens.html" class="active">Screen Inventory & Workflows</a></li>
+  <li><a href="theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Views</a> <span>»</span> <span>Screens & Workflows</span>
+      </div>
+      
+    <h1>Screen Inventory & Clinical Navigation Flow</h1>
+
+    <p>This manual provides an exhaustive inventory of the 10 application screens, detailing their layout, user interactions, and permission scopes.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#screen-login">1. LoginView (/login)</a></li>
+        <li><a href="#screen-dash">2. DashboardView (/)</a></li>
+        <li><a href="#screen-scoring">3. ScoringView (/scoring)</a></li>
+        <li><a href="#screen-student">4. StudentView (/student)</a></li>
+        <li><a href="#screen-session">5. SessionHistoryView &amp; SessionDetailView</a></li>
+        <li><a href="#screen-compare">6. CompareView (/compare)</a></li>
+        <li><a href="#screen-settings">7. SettingsView (/settings)</a></li>
+        <li><a href="#screen-admin">8. AdminConsoleView (/admin)</a></li>
+        <li><a href="#screen-parent">9. ParentDashboardView (/ - Parent Role)</a></li>
+      </ul>
+    </div>
+
+    <h2 id="screen-login">1. LoginView (/login)</h2>
+    <p>Handles local and cloud authentication. Features:</p>
+    <ul>
+      <li>Username and password input fields with input normalization.</li>
+      <li>First-time administrator setup banner when no accounts exist.</li>
+      <li>Tab toggle between <strong>Sign In</strong>, <strong>Register New Account</strong>, and <strong>Forgot Password</strong>.</li>
+      <li>Role selection during registration: <code>Teacher</code>, <code>Parent</code>, or <code>Admin</code>.</li>
+    </ul>
+
+    <h2 id="screen-dash">2. DashboardView (/)</h2>
+    <p>The primary clinical command center for therapists and administrators:</p>
+    <ul>
+      <li><strong>Header Metrics</strong>: Displays total active students, total completed assessments, and institutional average score.</li>
+      <li><strong>Search Bar</strong>: Instant client-side filtering by child name or medical record number.</li>
+      <li><strong>Student Cards</strong>: Each card displays child demographics, latest GMFM score badge, assessment date, and quick action buttons (<strong>Start Test</strong>, <strong>View History</strong>, <strong>Edit Profile</strong>).</li>
+      <li><strong>Floating Action Button (FAB)</strong>: Prominent shortcut to register a new student.</li>
+    </ul>
+
+    <h2 id="screen-scoring">3. ScoringView (/scoring)</h2>
+    <p>The core clinical evaluation interface:</p>
+    <ul>
+      <li><strong>Domain Selector Tabs</strong>: Horizontal scrollable tab bar switching between Dimensions A, B, C, D, and E with real-time domain completion percentages.</li>
+      <li><strong>Item Cards</strong>: Displays item number, official instruction text, and 5 interactive rating pills: <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>, and <code>NT</code>.</li>
+      <li><strong>In-App Exercise Instructions</strong>: An expandable drawer showing starting posture, clinical task description, and scoring guidance.</li>
+      <li><strong>Haptic Feedback</strong>: Instant tactile vibration pulse on score selection.</li>
+      <li><strong>Save &amp; Generate Report</strong>: Validates scoring, executes scoring calculation, persists to SQLite, and launches PDF generation dialog.</li>
+    </ul>
+
+    <h2 id="screen-student">4. StudentView (/student)</h2>
+    <p>Profile editor for registering or updating patient records. Encapsulates form fields for Given Name, Family Name, Date of Birth (with interactive date picker), and Medical Record Identifier.</p>
+
+    <h2 id="screen-session">5. SessionHistoryView &amp; SessionDetailView</h2>
+    <ul>
+      <li><strong>History View</strong>: Renders a longitudinal chronological timeline of all evaluations for a child, complete with overall score progression and notes summary.</li>
+      <li><strong>Detail View</strong>: Displays the full post-assessment report on-screen, including domain radar/bar graphs, item-by-item ratings, assessor identity, and PDF export buttons.</li>
+    </ul>
+
+    <h2 id="screen-compare">6. CompareView (/compare)</h2>
+    <p>Enables therapists to select any two assessment dates and render a side-by-side comparative table showing point differences, percentage changes per domain, and developmental progress.</p>
+
+    <h2 id="screen-settings">7. SettingsView (/settings)</h2>
+    <p>Administrative configuration center:</p>
+    <ul>
+      <li>Dark mode / Light mode toggle.</li>
+      <li>Supabase Cloud Sync configuration (URL, anon key, connection status badge).</li>
+      <li>Manual "Sync Now" button and pending queue counter.</li>
+      <li>Microsoft Word (DOCX) assessment importer.</li>
+      <li>Sign out action.</li>
+    </ul>
+
+    <h2 id="screen-admin">8. AdminConsoleView (/admin)</h2>
+    <p>Restricted to administrators. Lists all system users, account active status, role modification dropdowns, and user creation forms.</p>
+
+    <h2 id="screen-parent">9. ParentDashboardView (/ - Parent Role)</h2>
+    <p>Dedicated read-only portal for parents. Shows a simplified progress summary of their linked child, domain improvement badges, and historical assessment reports without clinical administrative clutter.</p>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="index.html" class="bottom-nav-title">UI Architecture & Routing</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="theming.html" class="bottom-nav-title">Visual Theming & Color Tokens</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

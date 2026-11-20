@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dimensions A through E — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">GMFM System Overview</a></li>
+  <li><a href="algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="domains.html" class="active">Dimensions A through E</a></li>
+  <li><a href="catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Clinical Scoring</a> <span>»</span> <span>Dimensions A-E</span>
+      </div>
+      
+    <h1>Motor Dimensions A through E Specification</h1>
+
+    <p>The GMFM assessment is structured across five developmental motor dimensions. Each dimension isolates specific postural control mechanisms, balance transitions, and locomotor competencies.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#dim-a">Dimension A: Lying &amp; Rolling (17 Items)</a></li>
+        <li><a href="#dim-b">Dimension B: Sitting (20 Items)</a></li>
+        <li><a href="#dim-c">Dimension C: Crawling &amp; Kneeling (14 Items)</a></li>
+        <li><a href="#dim-d">Dimension D: Standing (13 Items)</a></li>
+        <li><a href="#dim-e">Dimension E: Walking, Running &amp; Jumping (24 Items)</a></li>
+      </ul>
+    </div>
+
+    <h2 id="dim-a">Dimension A: Lying &amp; Rolling (17 Items)</h2>
+    <p>Focuses on primitive postural reflexes, head control, supine/prone positioning, and axial rotational rolling. Key clinical evaluation criteria include:</p>
+    <ul>
+      <li>Head elevation and midline alignment in supine and prone positions.</li>
+      <li>Active weight-bearing through forearms and extended arms in prone.</li>
+      <li>Segmental and log rolling from supine to prone and prone to supine over left and right sides.</li>
+      <li>Reaching across midline with upper extremities in supine.</li>
+    </ul>
+
+    <h2 id="dim-b">Dimension B: Sitting (20 Items)</h2>
+    <p>Evaluates static and dynamic seated equilibrium, trunk righting reactions, and transitions between floor and sitting:</p>
+    <ul>
+      <li>Supported and unsupported sitting balance on mat with erect spine for 3 to 10 seconds.</li>
+      <li>Reaching forward and laterally for toys without loss of balance.</li>
+      <li>Transitional movement: pivot in sitting, lowering to prone, and moving from prone into sitting.</li>
+      <li>Bench sitting with feet supported on floor and reaching toward floor.</li>
+    </ul>
+
+    <h2 id="dim-c">Dimension C: Crawling &amp; Kneeling (14 Items)</h2>
+    <p>Isolates quadripedal pelvic stabilization, reciprocal extremity coordination, and upright kneeling:</p>
+    <ul>
+      <li>Maintaining four-point quadruped positioning for 10 seconds.</li>
+      <li>Reciprocal crawling on hands and knees forward for 1.8 meters (6 feet).</li>
+      <li>Attaining high-kneeling and half-kneeling with and without upper extremity support.</li>
+      <li>Transitioning from half-kneeling to standing.</li>
+    </ul>
+
+    <h2 id="dim-d">Dimension D: Standing (13 Items)</h2>
+    <p>Measures anti-gravity extensor tone, vertical postural alignment, and bipedal balance:</p>
+    <ul>
+      <li>Pull-to-stand through bench or rail with bilateral and unilateral lower extremity dominance.</li>
+      <li>Free standing without hand support for 3 to 20 seconds.</li>
+      <li>Single-leg standing balance on right and left lower extremities.</li>
+      <li>Controlled lowering from standing down to the floor without falling.</li>
+    </ul>
+
+    <h2 id="dim-e">Dimension E: Walking, Running &amp; Jumping (24 Items)</h2>
+    <p>The most demanding functional dimension, evaluating forward ambulation, dynamic agility, and vertical propulsion:</p>
+    <ul>
+      <li>Cruising along furniture and walking forward holding one or two hands.</li>
+      <li>Independent bipedal walking forward for 10 consecutive steps with reciprocal arm swing.</li>
+      <li>Pivot turning 180 degrees while walking without stopping.</li>
+      <li>Walking backwards, stepping over obstacles, stair ascent and descent with alternating feet.</li>
+      <li>Running 4.5 meters (15 feet), stopping cleanly, and bilateral standing broad jumps.</li>
+    </ul>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="algorithm.html" class="bottom-nav-title">Scoring Engine & Math</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="catalog.html" class="bottom-nav-title">88-Item Standard Catalog</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

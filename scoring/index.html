@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GMFM System Overview — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">GMFM System Overview</a></li>
+  <li><a href="algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="domains.html">Dimensions A through E</a></li>
+  <li><a href="catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Clinical Scoring</span>
+      </div>
+      
+    <h1>Gross Motor Function Measure (GMFM) System Overview</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Clinical Instrument Background</div>
+      The <strong>Gross Motor Function Measure (GMFM)</strong> is an evaluative clinical tool developed to assess changes in gross motor function over time in children with cerebral palsy (CP) and Down syndrome. MotorMeasure Pro implements the full <strong>GMFM-88</strong> scale with complete item catalogs, validation boundaries, and domain aggregations.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#dimensions">1. The Five Gross Motor Dimensions</a></li>
+        <li><a href="#scale">2. Standardized 4-Point Rating Scale</a></li>
+        <li><a href="#dual-scales">3. GMFM-88 vs GMFM-66 Scales</a></li>
+        <li><a href="#subpages">4. Detailed Scoring Manuals</a></li>
+      </ul>
+    </div>
+
+    <h2 id="dimensions">1. The Five Gross Motor Dimensions</h2>
+    <p>The GMFM-88 assesses 88 distinct motor tasks categorized into five developmental motor dimensions:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Clinical Description</th>
+          <th>Item Range</th>
+          <th>Total Items</th>
+          <th>Max Possible Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dimension A</strong></td>
+          <td>Lying &amp; Rolling</td>
+          <td>Items 1 – 17</td>
+          <td>17 items</td>
+          <td>51 points</td>
+        </tr>
+        <tr>
+          <td><strong>Dimension B</strong></td>
+          <td>Sitting</td>
+          <td>Items 18 – 37</td>
+          <td>20 items</td>
+          <td>60 points</td>
+        </tr>
+        <tr>
+          <td><strong>Dimension C</strong></td>
+          <td>Crawling &amp; Kneeling</td>
+          <td>Items 38 – 51</td>
+          <td>14 items</td>
+          <td>42 points</td>
+        </tr>
+        <tr>
+          <td><strong>Dimension D</strong></td>
+          <td>Standing</td>
+          <td>Items 52 – 64</td>
+          <td>13 items</td>
+          <td>39 points</td>
+        </tr>
+        <tr>
+          <td><strong>Dimension E</strong></td>
+          <td>Walking, Running &amp; Jumping</td>
+          <td>Items 65 – 88</td>
+          <td>24 items</td>
+          <td>72 points</td>
+        </tr>
+        <tr style="font-weight:bold; background-color:#edf2f7;">
+          <td>Total</td>
+          <td>Full GMFM Assessment</td>
+          <td>Items 1 – 88</td>
+          <td>88 items</td>
+          <td>264 points</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="scale">2. Standardized 4-Point Rating Scale</h2>
+    <p>Each item in the GMFM is scored on a standardized 4-point ordinal scale according to how much of the activity the child accomplishes:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:12%;">Score</th>
+          <th style="width:28%;">Standardized Meaning</th>
+          <th>Clinical Criteria &amp; Execution Guidance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#e74c3c; font-size:16px;">0</strong></td>
+          <td><strong>Does Not Initiate</strong></td>
+          <td>The child is unable to initiate the movement, does not attempt the activity, or initiates less than 10% of the movement range.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#e67e22; font-size:16px;">1</strong></td>
+          <td><strong>Initiates Task</strong></td>
+          <td>The child initiates the task, completing greater than 0% but less than 10% of the movement range.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#f1c40f; font-size:16px;">2</strong></td>
+          <td><strong>Partially Completes</strong></td>
+          <td>The child partially completes the activity (10% to less than 100% of the specified movement criteria or time hold).</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#27ae60; font-size:16px;">3</strong></td>
+          <td><strong>Completes Independently</strong></td>
+          <td>The child accomplishes 100% of the task criteria independently, achieving full range, balance, and prescribed time.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#7f8c8d; font-size:16px;">NT</strong></td>
+          <td><strong>Not Tested / Omitted</strong></td>
+          <td>The item was omitted due to environmental barriers, child fatigue, lack of cooperation, or clinical judgement. Handled specifically by the scoring engine.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="dual-scales">3. GMFM-88 vs GMFM-66 Scales</h2>
+    <p>MotorMeasure Pro supports both scale definitions within its data models:</p>
+    <ul>
+      <li><strong>GMFM-88</strong>: The original comprehensive criterion-referenced measure. Useful for children with severe motor impairments (GMFCS Level IV &amp; V) or children assessed with assistive orthoses/shoes.</li>
+      <li><strong>GMFM-66</strong>: An interval-scaled measure derived through Rasch analysis, consisting of a 66-item subset of the original 88 items. Items in MotorMeasure Pro's catalog are tagged with the boolean flag <code>gmfm66: true</code>.</li>
+    </ul>
+
+    <h2 id="subpages">4. Detailed Scoring Manuals</h2>
+    <div class="docu-grid">
+      <a class="docu-card" href="algorithm.html">
+        <h3>Scoring Engine &amp; Math</h3>
+        <p>Mathematical scoring formulas, domain percentage calculations, clamping logic, and partial scoring rules.</p>
+      </a>
+      <a class="docu-card" href="domains.html">
+        <h3>Dimensions A through E Specification</h3>
+        <p>In-depth functional overview and developmental progression for each of the 5 gross motor dimensions.</p>
+      </a>
+      <a class="docu-card" href="catalog.html">
+        <h3>88-Item Standard Catalog</h3>
+        <p>Complete dictionary of all 88 test items, descriptions, and GMFM-66 subset eligibility.</p>
+      </a>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../architecture/data-flow.html" class="bottom-nav-title">Data Flow & Pipelines</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="algorithm.html" class="bottom-nav-title">Scoring Engine & Math</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

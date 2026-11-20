@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security & Cryptography Model — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>Security</span>
+      </div>
+      
+    <h1>Security, Cryptography & Threat Mitigation</h1>
+
+    <div class="admonition important">
+      <div class="admonition-title">Healthcare Privacy Standards</div>
+      MotorMeasure Pro manages pediatric medical and developmental data. The security subsystem (<code>src/gmfm_app/services/security.py</code>) enforces field-level cryptography at rest, secure password hashing, and fail-closed data scoping.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#fernet">1. Fernet Symmetric Field-Level Encryption</a></li>
+        <li><a href="#key-resolution">2. Cryptographic Key Resolution Chain</a></li>
+        <li><a href="#threats">3. Threat Model &amp; Countermeasures</a></li>
+      </ul>
+    </div>
+
+    <h2 id="fernet">1. Fernet Symmetric Field-Level Encryption</h2>
+    <p>Personal identifiable information (PII) is encrypted before being written to SQLite using <strong>Fernet symmetric encryption</strong> (from the <code>cryptography</code> library). Under the hood, Fernet uses:</p>
+    <ul>
+      <li><strong>AES-128-CBC</strong> for confidentiality.</li>
+      <li><strong>HMAC-SHA256</strong> for message authentication and integrity verification.</li>
+      <li>128-bit initialization vector (IV) generated per write using <code>os.urandom()</code>.</li>
+    </ul>
+
+    <p>Fields encrypted in the local database: <code>students.given_name</code>, <code>students.family_name</code>, and <code>students.identifier</code> (Medical Record Number).</p>
+
+    <h2 id="key-resolution">2. Cryptographic Key Resolution Chain</h2>
+    <p>The <code>SecurityProvider</code> resolves the master encryption key following a 3-stage priority waterfall:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/services/security.py</span><span>Key Resolution Waterfall</span></div>
+      <pre><code>def _load_key(self) -> bytes:
+    # 1. Environment Variable: GMFM_APP_SECRET (Highest Priority)
+    env_key = os.getenv("GMFM_APP_SECRET")
+    if env_key:
+        return env_key.encode()
+
+    # 2. Local Key File: .gmfm_key in application data directory
+    file_key = self._read_local_key()
+    if file_key:
+        return file_key
+
+    # 3. Dynamic Generation: Generate new Fernet key and persist locally
+    new_key = Fernet.generate_key()
+    self._persist_key(new_key)
+    return new_key</code></pre>
+    </div>
+
+    <h2 id="threats">3. Threat Model &amp; Countermeasures</h2>
+    <table>
+      <thead>
+        <tr><th>Threat Vector</th><th>Potential Impact</th><th>Mitigation Architecture</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Physical Device Theft</strong></td>
+          <td>Extraction of raw SQLite file from device flash storage.</td>
+          <td>Patient names and medical record numbers are stored as Fernet ciphertext. Unreadable without master key.</td>
+        </tr>
+        <tr>
+          <td><strong>Local Credential Extraction</strong></td>
+          <td>Offline dictionary attack against clinician passwords.</td>
+          <td>PBKDF2-HMAC-SHA256 with 200,000 iterations and 16-byte random salt prevents rainbow table attacks.</td>
+        </tr>
+        <tr>
+          <td><strong>Unauthorized Cloud Snooping</strong></td>
+          <td>API interception of student assessments.</td>
+          <td>Supabase PostgreSQL enforces Row-Level Security (RLS). Users can only select records they created or were explicitly granted access to.</td>
+        </tr>
+        <tr>
+          <td><strong>Privilege Escalation</strong></td>
+          <td>A teacher altering their role to admin via cloud API.</td>
+          <td>PostgreSQL trigger <code>protect_profile_role()</code> intercepts UPDATE statements and rejects non-admin role modifications.</td>
+        </tr>
+      </tbody>
+    </table>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../views/theming.html" class="bottom-nav-title">Visual Theming & Color Tokens</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../deployment/index.html" class="bottom-nav-title">Android APK & Desktop Builds</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

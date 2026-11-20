@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware & Import Services — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Services Overview</a></li>
+  <li><a href="auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="access.html">Access Scoping & Roles</a></li>
+  <li><a href="hardware.html" class="active">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Services</a> <span>»</span> <span>Hardware & Import</span>
+      </div>
+      
+    <h1>Device Hardware Services & DOCX Importer</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Platform Integration</div>
+      MotorMeasure Pro provides specialized device integration services including customized mobile haptics, Android display scaling, and legacy document import.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#haptics">1. Tactile Haptic Feedback (haptics.py)</a></li>
+        <li><a href="#ui-scale">2. Android Accessibility Scaling (ui_scale.py)</a></li>
+        <li><a href="#docx">3. DOCX Assessment Importer (docx_import_service.py)</a></li>
+      </ul>
+    </div>
+
+    <h2 id="haptics">1. Tactile Haptic Feedback (haptics.py)</h2>
+    <p>To assist therapists during fast-paced clinical assessments with active children, the UI provides instant tactile confirmation when rating buttons are tapped. The haptic service is calibrated for mobile linear resonant actuators (notably Nothing Phone 2a):</p>
+    <ul>
+      <li><code>Haptics.light()</code>: 15ms light pulse on item selection.</li>
+      <li><code>Haptics.medium()</code>: 30ms pulse on domain navigation tab switch.</li>
+      <li><code>Haptics.heavy()</code>: 50ms pulse on session submission and report generation.</li>
+      <li><code>Haptics.success()</code>: Double-tap pattern (20ms pulse, 40ms pause, 20ms pulse) on cloud sync completion.</li>
+    </ul>
+
+    <h2 id="ui-scale">2. Android Accessibility Scaling (ui_scale.py)</h2>
+    <p>On Android devices, users may configure system-wide accessibility display scaling or enlarged font sizes. Standard GUI layouts frequently clip or overflow when text scales up. <code>apply_android_scale()</code> inspects the system <code>page.client_storage</code> or platform metrics, computing a responsive scale multiplier and dynamically adapting container paddings, font sizes, and button heights.</p>
+
+    <h2 id="docx">3. DOCX Assessment Importer (docx_import_service.py)</h2>
+    <p>Clinics transitioning from paper or Word-based assessments can directly import legacy evaluations. The importer:</p>
+    <ul>
+      <li>Parses table structures from Microsoft Word (<code>.docx</code>) documents using <code>python-docx</code>.</li>
+      <li>Extracts student metadata (Name, DOB, Date of Assessment, Assessor).</li>
+      <li>Parses multi-column scoresheets, recognizing numerical scores 0–3 while discarding 'NT' marks.</li>
+      <li>Supports multi-session documents with multiple date headers, creating longitudinal session records in local SQLite.</li>
+    </ul>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="access.html" class="bottom-nav-title">Access Scoping & Roles</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="../views/index.html" class="bottom-nav-title">UI Architecture & Routing</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

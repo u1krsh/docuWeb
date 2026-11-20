@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete API Reference — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html" class="active">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <span>API Reference</span>
+      </div>
+      
+    <h1>Comprehensive Package & Module API Reference</h1>
+
+    <p>This reference documents the public functions, classes, methods, and constants across the MotorMeasure Pro codebase.</p>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#api-main">1. Module: gmfm_app.main</a></li>
+        <li><a href="#api-scoring">2. Module: gmfm_app.scoring.engine</a></li>
+        <li><a href="#api-data">3. Module: gmfm_app.data.database &amp; repositories</a></li>
+        <li><a href="#api-services">4. Modules: gmfm_app.services.*</a></li>
+        <li><a href="#api-theme">5. Module: gmfm_app.theme</a></li>
+      </ul>
+    </div>
+
+    <h2 id="api-main">1. Module: gmfm_app.main</h2>
+    <dl>
+      <dt><code>main(page: ft.Page) -> None</code></dt>
+      <dd>Application bootloader. Detects mobile vs desktop runtimes, displays animated brand splash, initializes DatabaseContext, and attaches the master GMFMApp controller.</dd>
+
+      <dt><code>class GMFMApp(page: ft.Page, db_context: DatabaseContext = None)</code></dt>
+      <dd>Central presentation controller managing URL route changes, view stack instantiation, authentication gating, client storage, and background sync worker lifecycle.</dd>
+    </dl>
+
+    <h2 id="api-scoring">2. Module: gmfm_app.scoring.engine</h2>
+    <dl>
+      <dt><code>calculate_gmfm_scores(raw_scores: Dict[int, int], scale: str = "88") -> Dict[str, object]</code></dt>
+      <dd>Computes domain percentages and overall total percentage from raw score dictionary. Returns structured dictionary containing <code>scale</code>, <code>domains</code>, <code>total_percent</code>, <code>items_scored</code>, and <code>items_total</code>.</dd>
+
+      <dt><code>calculate_gmfm88(raw_scores: Dict[int, int]) -> Dict[str, object]</code></dt>
+      <dd>Convenience wrapper defaulting to GMFM-88 scale evaluation.</dd>
+    </dl>
+
+    <h2 id="api-data">3. Module: gmfm_app.data.database &amp; repositories</h2>
+    <dl>
+      <dt><code>class DatabaseContext(db_path: str = None, security: SecurityProvider = None)</code></dt>
+      <dd>Encapsulates SQLite connection management, transaction context generation, and symmetric field cipher delegation.</dd>
+
+      <dt><code>class StudentRepository(BaseRepository)</code></dt>
+      <dd>Methods: <code>list_students(limit=50)</code>, <code>get_student(student_id)</code>, <code>create_student(student)</code>, <code>update_student(student)</code>, <code>delete_student(student_id)</code>.</dd>
+
+      <dt><code>class SessionRepository(BaseRepository)</code></dt>
+      <dd>Methods: <code>create_session(session)</code>, <code>get_session(session_id)</code>, <code>list_sessions_for_student(student_id)</code>, <code>get_recent_sessions(limit=3)</code>, <code>get_dashboard_stats()</code>.</dd>
+    </dl>
+
+    <h2 id="api-services">4. Modules: gmfm_app.services.*</h2>
+    <dl>
+      <dt><code>class AuthService(db_context, sync_service=None)</code></dt>
+      <dd>Methods: <code>login(page, username, password)</code>, <code>create_user_account(...)</code>, <code>current_user(page)</code>, <code>logout(page)</code>, <code>request_password_reset(email)</code>, <code>complete_password_reset(page, email, token, new_password)</code>.</dd>
+
+      <dt><code>class SyncService(db_context, config: SyncConfig)</code></dt>
+      <dd>Methods: <code>push() -> SyncResult</code>, <code>pull() -> SyncResult</code>, <code>sync() -> SyncResult</code>, <code>is_online() -> bool</code>, <code>ensure_auth() -> bool</code>, <code>restore_from_cloud() -> SyncResult</code>.</dd>
+
+      <dt><code>generate_report(student, session, scoring_result, output_path, trend_chart=None, tester_name=None) -> Path</code></dt>
+      <dd>Selects optimal PDF backend (ReportLab, fpdf2, or raw byte generator) and writes clinical PDF report to disk.</dd>
+    </dl>
+
+    <h2 id="api-theme">5. Module: gmfm_app.theme</h2>
+    <dl>
+      <dt><code>get_colors(is_dark: bool) -> dict</code></dt>
+      <dd>Returns design tokens: <code>BG</code>, <code>CARD</code>, <code>BORDER</code>, <code>TEXT1</code>, <code>TEXT2</code>, <code>TEXT3</code>.</dd>
+
+      <dt><code>DOMAIN_COLORS: Dict[str, str]</code></dt>
+      <dd>Functional color mapping for motor dimensions A through E.</dd>
+    </dl>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="../development/index.html" class="bottom-nav-title">Development Journey & Roadmap</a>
+  </div>
+  <div class="bottom-nav-item next"></div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline-First Sync Engine — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Services Overview</a></li>
+  <li><a href="auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="sync.html" class="active">Offline-First Sync Engine</a></li>
+  <li><a href="reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="access.html">Access Scoping & Roles</a></li>
+  <li><a href="hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Services</a> <span>»</span> <span>Sync Engine</span>
+      </div>
+      
+    <h1>Offline-First Sync Engine Specification</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Git-like Synchronization Model</div>
+      MotorMeasure Pro's sync architecture follows a <strong>commit locally, push when online</strong> paradigm implemented in <code>src/gmfm_app/services/sync_service.py</code>.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#queue">1. The Mutation Queue (sync_queue)</a></li>
+        <li><a href="#push">2. Push Engine (Local &rarr; Cloud)</a></li>
+        <li><a href="#pull">3. Pull Engine &amp; Conflict Resolution</a></li>
+        <li><a href="#worker">4. Background SyncWorker Poller</a></li>
+      </ul>
+    </div>
+
+    <h2 id="queue">1. The Mutation Queue (sync_queue)</h2>
+    <p>Every clinical transaction (adding a student, recording a GMFM session, editing patient info, or deleting records) writes an entry into the local <code>sync_queue</code> table within the same SQLite transaction. The payload contains the full serialized state of the entity.</p>
+
+    <h2 id="push">2. Push Engine (Local &rarr; Cloud)</h2>
+    <p>The push routine batches up to 100 unsynced queue items per cycle:</p>
+    <ul>
+      <li>Ensures valid cloud authentication (restoring session from <code>~/.gmfm_app/.cloud_token</code> if necessary).</li>
+      <li>Translates local primary keys into cloud records indexed by composite unique key: <code>(created_by, local_id)</code>.</li>
+      <li>For <code>DELETE</code> operations, issues a soft-delete tombstone (<code>deleted: true</code>) to prevent data loss across peer devices.</li>
+      <li>Upon successful HTTP 200 response from Supabase, marks <code>synced = 1</code> in <code>sync_queue</code>.</li>
+    </ul>
+
+    <h2 id="pull">3. Pull Engine &amp; Conflict Resolution</h2>
+    <div class="admonition tip">
+      <div class="admonition-title">Conflict Resolution Strategy: Local Wins</div>
+      Before applying any incoming cloud mutation into local SQLite, the pull routine executes:
+      <code>SELECT COUNT(*) FROM sync_queue WHERE table_name = ? AND record_id = ? AND synced = 0</code>.
+      If a pending local mutation exists, the incoming cloud update is <strong>discarded</strong>.
+    </div>
+    <p>This guarantees that a clinician's active on-device edits are never overwritten by stale cloud data arriving after network reconnection.</p>
+
+    <h2 id="worker">4. Background SyncWorker Poller</h2>
+    <p><code>SyncWorker</code> is a daemon thread instantiated during application bootstrap. It operates on a 60-second cycle:</p>
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/services/sync_worker.py</span><span>Background Loop</span></div>
+      <pre><code>def _run_loop(self):
+    time.sleep(5) # Initial warmup delay
+    while self._running:
+        try:
+            if not self.sync_service.is_online():
+                _log("Offline — skipping sync cycle")
+            else:
+                self._provision_pending_accounts()
+                pending = self.sync_service.get_pending_count()
+                if self.sync_service.ensure_auth():
+                    if pending > 0:
+                        res = self.sync_service.sync()
+                    else:
+                        res = self.sync_service.pull()
+        except Exception as e:
+            _log(f"Auto-sync error: {e}")
+
+        # Sleep in 1s increments for responsive shutdown
+        for _ in range(self.interval):
+            if not self._running: break
+            time.sleep(1)</code></pre>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="auth.html" class="bottom-nav-title">Authentication & PBKDF2</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="reports.html" class="bottom-nav-title">3-Tier PDF Pipeline</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication & PBKDF2 — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="../scoring/index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="../scoring/index.html">GMFM System Overview</a></li>
+  <li><a href="../scoring/algorithm.html">Scoring Engine & Math</a></li>
+  <li><a href="../scoring/domains.html">Dimensions A through E</a></li>
+  <li><a href="../scoring/catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">Services Overview</a></li>
+  <li><a href="auth.html" class="active">Authentication & PBKDF2</a></li>
+  <li><a href="sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="access.html">Access Scoping & Roles</a></li>
+  <li><a href="hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Services</a> <span>»</span> <span>Authentication</span>
+      </div>
+      
+    <h1>Authentication Service & PBKDF2 Specification</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Two-Tier Authentication</div>
+      MotorMeasure Pro couples <strong>local cryptographic verification</strong> with <strong>asynchronous cloud account provisioning</strong> inside <code>src/gmfm_app/services/auth_service.py</code>.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#pbkdf2">1. PBKDF2-HMAC-SHA256 Password Cryptography</a></li>
+        <li><a href="#login-flow">2. Two-Tier Login Lifecycle</a></li>
+        <li><a href="#cloud-prov">3. Automatic Cloud Provisioning Mechanism</a></li>
+        <li><a href="#recovery">4. Password Recovery &amp; OTP Flow</a></li>
+      </ul>
+    </div>
+
+    <h2 id="pbkdf2">1. PBKDF2-HMAC-SHA256 Password Cryptography</h2>
+    <p>Passwords are never stored in plaintext. Local credential verification utilizes PBKDF2 with HMAC-SHA256, configured with 200,000 iterations and a 16-byte cryptographically secure pseudorandom salt generated via <code>os.urandom()</code>:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/services/auth_service.py</span><span>Password Hashing & Verification</span></div>
+      <pre><code>def hash_password(password: str, iterations: int = 200_000) -> str:
+    salt = os.urandom(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, iterations)
+    salt_b64 = base64.b64encode(salt).decode("utf-8")
+    digest_b64 = base64.b64encode(digest).decode("utf-8")
+    return f"pbkdf2_sha256${iterations}${salt_b64}${digest_b64}"
+
+def verify_password(password: str, encoded_hash: str) -> bool:
+    try:
+        algorithm, iterations_raw, salt_b64, digest_b64 = encoded_hash.split("$", 3)
+        if algorithm != "pbkdf2_sha256":
+            return False
+        iterations = int(iterations_raw)
+        salt = base64.b64decode(salt_b64)
+        expected = base64.b64decode(digest_b64)
+        candidate = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, iterations)
+        # Constant-time comparison prevents timing side-channel attacks
+        return hmac.compare_digest(candidate, expected)
+    except Exception:
+        return False</code></pre>
+    </div>
+
+    <h2 id="login-flow">2. Two-Tier Login Lifecycle</h2>
+    <p>When a user submits credentials in <code>LoginView</code>:</p>
+    <ol>
+      <li><strong>Local Authentication</strong>: The username is normalized (stripped and lowercased) and queried from <code>app_users</code>. If found and active, <code>verify_password()</code> runs.</li>
+      <li><strong>New Device Cloud Fallback</strong>: If the username is not found locally but contains an '@' character (an email), and cloud sync is configured, the service attempts to sign in to Supabase. If successful, it automatically provisions the user row in local SQLite!</li>
+      <li><strong>Session Persistence</strong>: User ID and username are stored in Flet's encrypted <code>client_storage</code>.</li>
+      <li><strong>Asynchronous Cloud Trigger</strong>: <code>_cloud_provision()</code> is initiated on a daemon worker thread.</li>
+    </ol>
+
+    <h2 id="cloud-prov">3. Automatic Cloud Provisioning Mechanism</h2>
+    <p>Clinicians do not need to manage separate cloud and local accounts. The <code>_cloud_provision()</code> worker automatically reconciles them:</p>
+    <ul>
+      <li>If the account has no email on record (e.g. legacy local account), a deterministic synthetic email is generated: <code>username@motormeasure.app</code>.</li>
+      <li>The worker tests reachability. If offline, it defers provisioning without disrupting the user.</li>
+      <li>If online, it signs into Supabase Auth. If the cloud account does not yet exist, it calls <code>sign_up()</code> and injects user profile metadata into the cloud database.</li>
+      <li>Once authenticated, it retrieves the server-authoritative role from <code>profiles.role</code> and updates the local SQLite mirror if required.</li>
+    </ul>
+
+    <h2 id="recovery">4. Password Recovery &amp; OTP Flow</h2>
+    <p>When an authenticated account loses its password:</p>
+    <ol>
+      <li>The clinician enters their email on the login screen and clicks "Forgot Password".</li>
+      <li><code>AuthService.request_password_reset(email)</code> calls Supabase's <code>reset_password_for_email()</code>, sending an OTP recovery code to the registered inbox.</li>
+      <li>The user inputs the 6-digit OTP token and a new password.</li>
+      <li><code>AuthService.complete_password_reset(page, email, token, new_password)</code> validates the token via <code>verify_otp(type="recovery")</code>, updates the cloud password, and immediately re-hashes and mirrors the new password into local SQLite.</li>
+    </ol>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="index.html" class="bottom-nav-title">Services Overview</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="sync.html" class="bottom-nav-title">Offline-First Sync Engine</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

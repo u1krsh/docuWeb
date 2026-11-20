@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scoring Engine & Math — The MotorMeasure Pro documentation</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/search.js" defer></script>
+</head>
+<body>
+  <header class="top-header">
+  <div class="top-header-inner">
+    <div class="header-title-group">
+      <span class="header-title"><a href="../index.html">The MotorMeasure Pro Documentation</a></span>
+      <span class="header-badge">v0.0.3 (Production)</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html">Home</a>
+      <a href="../architecture/index.html">Architecture</a>
+      <a href="index.html">Scoring Engine</a>
+      <a href="../data/index.html">Data Layer</a>
+      <a href="../services/index.html">Services</a>
+      <a href="../views/index.html">Views</a>
+      <a href="../security/index.html">Security</a>
+      <a href="../deployment/index.html">Deployment</a>
+      <a href="../api/index.html">API</a>
+    </nav>
+  </div>
+</header>
+  <div class="layout-container">
+    <aside class="sidebar">
+      <div class="sidebar-search">
+  <input type="text" id="docSearchInput" placeholder="Instant Filter Topics...">
+</div>
+<div class="sidebar-section-title">Overview</div>
+<ul class="sidebar-menu">
+  <li><a href="../index.html">Documentation Home</a></li>
+</ul>
+<div class="sidebar-section-title">Architecture & Design</div>
+<ul class="sidebar-menu">
+  <li><a href="../architecture/index.html">Architecture Overview</a></li>
+  <li><a href="../architecture/layers.html">Layered Architecture</a></li>
+  <li><a href="../architecture/data-flow.html">Data Flow & Pipelines</a></li>
+</ul>
+<div class="sidebar-section-title">Clinical Domain & Scoring</div>
+<ul class="sidebar-menu">
+  <li><a href="index.html">GMFM System Overview</a></li>
+  <li><a href="algorithm.html" class="active">Scoring Engine & Math</a></li>
+  <li><a href="domains.html">Dimensions A through E</a></li>
+  <li><a href="catalog.html">88-Item Standard Catalog</a></li>
+</ul>
+<div class="sidebar-section-title">Data Models & Repositories</div>
+<ul class="sidebar-menu">
+  <li><a href="../data/index.html">Data Layer Overview</a></li>
+  <li><a href="../data/models.html">Domain Models (Dual Pattern)</a></li>
+  <li><a href="../data/repositories.html">Repositories & Scoping</a></li>
+</ul>
+<div class="sidebar-section-title">Database & Schemas</div>
+<ul class="sidebar-menu">
+  <li><a href="../database/index.html">Database Architecture</a></li>
+  <li><a href="../database/local-schema.html">Local SQLite Schema</a></li>
+  <li><a href="../database/cloud-schema.html">Supabase PostgreSQL & RLS</a></li>
+  <li><a href="../database/migrations.html">13 Schema Migrations</a></li>
+</ul>
+<div class="sidebar-section-title">Services & Subsystems</div>
+<ul class="sidebar-menu">
+  <li><a href="../services/index.html">Services Overview</a></li>
+  <li><a href="../services/auth.html">Authentication & PBKDF2</a></li>
+  <li><a href="../services/sync.html">Offline-First Sync Engine</a></li>
+  <li><a href="../services/reports.html">3-Tier PDF Pipeline</a></li>
+  <li><a href="../services/access.html">Access Scoping & Roles</a></li>
+  <li><a href="../services/hardware.html">Hardware & Import Services</a></li>
+</ul>
+<div class="sidebar-section-title">User Interface (Views)</div>
+<ul class="sidebar-menu">
+  <li><a href="../views/index.html">UI Architecture & Routing</a></li>
+  <li><a href="../views/screens.html">Screen Inventory & Workflows</a></li>
+  <li><a href="../views/theming.html">Visual Theming & Color Tokens</a></li>
+</ul>
+<div class="sidebar-section-title">Security & Cryptography</div>
+<ul class="sidebar-menu">
+  <li><a href="../security/index.html">Security & Encryption Model</a></li>
+</ul>
+<div class="sidebar-section-title">Deployment & Packaging</div>
+<ul class="sidebar-menu">
+  <li><a href="../deployment/index.html">Android APK & Desktop Builds</a></li>
+</ul>
+<div class="sidebar-section-title">Testing & Verification</div>
+<ul class="sidebar-menu">
+  <li><a href="../testing/index.html">Test Suite & Clinical Oracle</a></li>
+</ul>
+<div class="sidebar-section-title">Development & History</div>
+<ul class="sidebar-menu">
+  <li><a href="../development/index.html">Development Journey & Roadmap</a></li>
+</ul>
+<div class="sidebar-section-title">API Reference</div>
+<ul class="sidebar-menu">
+  <li><a href="../api/index.html">Complete API Reference</a></li>
+</ul>
+
+    </aside>
+    <main class="main-content">
+      <div class="breadcrumbs">
+        <a href="../index.html">Docs</a> <span>»</span> <a href="index.html">Clinical Scoring</a> <span>»</span> <span>Algorithm & Math</span>
+      </div>
+      
+    <h1>Scoring Engine & Mathematical Formulation</h1>
+
+    <div class="admonition note">
+      <div class="admonition-title">Formal Implementation</div>
+      The scoring algorithm is implemented in <code>src/gmfm_app/scoring/engine.py</code>. It is a stateless, pure functional calculation that computes domain percentages and overall scores from an input dictionary of item ratings.
+    </div>
+
+    <div class="contents-box">
+      <div class="contents-box-title">Document Contents</div>
+      <ul>
+        <li><a href="#domain-math">1. Mathematical Formula for Domain Scores</a></li>
+        <li><a href="#total-math">2. Total Score Formulation</a></li>
+        <li><a href="#partial">3. Missing Items & Not Tested (NT) Policy</a></li>
+        <li><a href="#code">4. Engine Implementation Code</a></li>
+      </ul>
+    </div>
+
+    <h2 id="domain-math">1. Mathematical Formula for Domain Scores</h2>
+    <p>For each motor dimension \( d \in \{A, B, C, D, E\} \), let \( I_d \) denote the set of item identifiers belonging to that dimension, and let \( s_i \in \{0, 1, 2, 3\} \) represent the clinician's assigned score for item \( i \).</p>
+
+    <p>Let \( S_d = I_d \cap 	ext{keys}(	ext{raw\_scores}) \) denote the subset of items that were actively scored by the assessor. The percentage score for dimension \( d \) is formulated as:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Formula</span><span>Dimension Percentage</span></div>
+      <pre><code>                     ∑_{i ∈ S_d} s_i
+Percent(d) = -----------------------------  × 100%
+              |S_d| × MAX_ITEM_SCORE (3)</code></pre>
+    </div>
+
+    <p>If no items in dimension \( d \) were tested (\( |S_d| = 0 \)), \( 	ext{Percent}(d) \) resolves defensively to <code>0.0%</code>.</p>
+
+    <h2 id="total-math">2. Total Score Formulation</h2>
+    <p>The total GMFM-88 score represents the weighted aggregate across all five motor dimensions. Rather than taking an unweighted average of percentages (which would bias toward smaller domains like Standing), the engine sums the raw observed points across all tested items and divides by the maximum possible score for all evaluated items:</p>
+
+    <div class="code-container">
+      <div class="code-header"><span>Formula</span><span>Overall Total Percentage</span></div>
+      <pre><code>                    ∑_{d} ( ∑_{i ∈ S_d} s_i )
+Total Percent = ---------------------------------  × 100%
+                 ∑_{d} ( |I_d| × MAX_ITEM_SCORE )</code></pre>
+    </div>
+
+    <h2 id="partial">3. Missing Items &amp; Not Tested (NT) Policy</h2>
+    <div class="admonition warning">
+      <div class="admonition-title">Critical Missing Data Rule</div>
+      Items marked <strong>NT (Not Tested)</strong> or omitted in <code>raw_scores</code> are <strong>strictly excluded from the domain denominator</strong>. They are NOT treated as score 0.
+    </div>
+    <p>Clinically, treating an unattempted item as score 0 (which denotes complete inability to initiate) would artificially depress the child's score for items omitted due to time constraints. The engine reports both <code>n_items_scored</code> and <code>n_items_total</code> for every domain, enabling clinicians and audit reports to immediately identify partial assessments.</p>
+
+    <h2 id="code">4. Engine Implementation Code</h2>
+    <div class="code-container">
+      <div class="code-header"><span>src/gmfm_app/scoring/engine.py</span><span>Core Engine Method</span></div>
+      <pre><code>from typing import Dict, Iterable, Tuple
+from gmfm_app.scoring.constants import GMFM88_ITEMS, MAX_ITEM_SCORE
+
+def _score_domain(item_ids: Iterable[int], raw_scores: Dict[int, int]) -> Tuple[float, int]:
+    item_ids = list(item_ids)
+    if not item_ids:
+        return 0.0, 0
+    total = 0
+    count = 0
+    for iid in item_ids:
+        if iid in raw_scores:
+            val = raw_scores[iid]
+            # Defensive clamp between 0 and 3
+            val = max(0, min(MAX_ITEM_SCORE, int(val)))
+            total += val
+            count += 1
+    if count == 0:
+        return 0.0, len(item_ids)
+    max_possible = count * MAX_ITEM_SCORE
+    percent = (total / max_possible) * 100.0
+    return percent, count</code></pre>
+    </div>
+    
+      <div class="bottom-nav">
+  <div class="bottom-nav-item prev">
+    <div class="bottom-nav-label">« Previous Section</div>
+    <a href="index.html" class="bottom-nav-title">GMFM System Overview</a>
+  </div>
+  <div class="bottom-nav-item next">
+    <div class="bottom-nav-label">Next Section »</div>
+    <a href="domains.html" class="bottom-nav-title">Dimensions A through E</a>
+  </div>
+</div>
+
+      <footer class="footer">
+        <p><strong>The MotorMeasure Pro / GMFM_System88 documentation</strong> is maintained by the core development team.</p>
+        <p>Based on the Gross Motor Function Measure (GMFM) clinical protocol by Dianne Russell, Peter Rosenbaum, et al., CanChild Centre for Childhood Disability Research, McMaster University.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
